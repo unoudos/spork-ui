@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Spork App</title>
+    <link rel="stylesheet" href="spork.css">
+</head>
+<body>
+    <div id="app" class="sz-page">
+        <div class="sz-card sz-center">
+            <h1 class="sz-h1" data-spork-text="saludo"></h1>
+            <input class="sz-input sz-mt-2" type="text" data-spork-bind="saludo">
+        </div>
+    </div>
+
+    <script src="spork.js"></script>
+    <script>
+        Spork.init({
+            saludo: "¡Hola desde Spork UI!"
+        });
+    </script>
+</body>
+</html>
