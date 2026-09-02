@@ -157,29 +157,6 @@
         set: __set,
         init: init,
         state: __state,
-        render: __render,
-        _eval: __eval
+        render: __render
     };
-
-    // ── Prelude — funciones disponibles en todos los archivos Spork ──────────
-    window.print = function(...args) {
-        const d = document.getElementById('app');
-        if (!d) { console.log(...args); return; }
-        const l = document.createElement('div');
-        l.textContent = args.map(String).join(' ');
-        d.appendChild(l);
-    };
-    window.printn = window.print;
-    window.range = function(a,b) { var s=b==null?0:a,e=b==null?a:b,r=[]; for(var i=s;i<e;i++) r.push(i); return r; };
-    window.str   = function(x) { return x==null?'':String(x); };
-    window.int   = function(x) { var n=parseInt(x,10); return isNaN(n)?0:n; };
-    window.float = function(x) { var n=parseFloat(x); return isNaN(n)?0.0:n; };
-    window.len   = function(x) { if(x==null)return 0; if(typeof x==='string'||Array.isArray(x))return x.length; return Object.keys(x).length; };
-    window.to_json   = function(x) { return JSON.stringify(x); };
-    window.from_json = function(s) { try{return JSON.parse(s);}catch(e){return null;} };
-    window.keys      = function(obj) { return obj==null?[]:Object.keys(obj); };
-    window.values    = function(obj) { return obj==null?[]:Object.values(obj); };
-    window.has_key   = function(obj,k) { return obj!=null&&Object.prototype.hasOwnProperty.call(obj,k); };
-    window.spk_push  = function(arr,val) { var a=Array.isArray(arr)?[...arr]:[]; a.push(val); return a; };
-    window.spk_pop   = function(arr) { if(!Array.isArray(arr)||arr.length===0)return arr; return arr.slice(0,-1); };
 })(window);
