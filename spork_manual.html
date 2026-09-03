@@ -1,0 +1,1191 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Spork UI — Manual Completo v3.0</title>
+    <link rel="stylesheet" href="spork.css">
+    <style>
+        .demo-box{background:var(--sz-surface);border:1px solid color-mix(in srgb,var(--sz-primary) 20%,transparent);border-radius:12px;padding:16px;margin:12px 0;display:flex;flex-direction:column;gap:10px}
+        .code-snippet{background:#0d1117;color:#c9d1d9;padding:14px 16px;border-radius:10px;font-family:ui-monospace,monospace;font-size:.82rem;overflow-x:auto;margin:8px 0;line-height:1.7;white-space:pre}
+        .section-index{display:flex;flex-direction:column;gap:6px;width:100%}
+        .section-index a{color:var(--sz-primary);text-decoration:none;font-size:.9rem;padding:6px 10px;border-radius:8px;transition:background .15s}
+        .section-index a:hover{background:color-mix(in srgb,var(--sz-primary) 10%,transparent)}
+        .kw{color:#ff7b72}.str{color:#a5d6ff}.cmt{color:#8b949e;font-style:italic}.tag{color:#7ee787}.attr{color:#79c0ff}.val{color:#a5d6ff}
+        h2[id]{scroll-margin-top:20px}
+        .pill{display:inline-block;background:color-mix(in srgb,var(--sz-primary) 15%,transparent);color:var(--sz-primary);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:ui-monospace,monospace}
+    </style>
+</head>
+<body class="sz-dark">
+<div id="app" class="sz-page">
+
+<!-- ── Cabecera ─────────────────────────────────────────────────────────── -->
+<div class="sz-card sz-center">
+    <h1 class="sz-h1">⚡ Spork UI</h1>
+    <p class="sz-subtitle sz-muted">Manual Completo v3.0 — Framework reactivo vanilla, sin Virtual DOM</p>
+    <div class="sz-row sz-mt-2">
+        <span class="sz-badge">Proxy nativo</span>
+        <span class="sz-badge">Sin dependencias</span>
+        <span class="sz-badge">Mobile-first</span>
+        <span class="sz-badge">~4 KB gzip</span>
+    </div>
+</div>
+
+<!-- ── Índice ────────────────────────────────────────────────────────────── -->
+<div class="sz-card">
+    <h2 class="sz-h2">📋 Índice</h2>
+    <div class="sz-grid" style="grid-template-columns:repeat(auto-fill,minmax(220px,1fr))">
+        <div class="section-index">
+            <strong class="sz-label sz-muted">Reactividad</strong>
+            <a href="#estado">1. Estado y Reactividad</a>
+            <a href="#texto">2. Bindings de Texto</a>
+            <a href="#condicional">3. Condicionales y Clases</a>
+            <a href="#attrs">4. Atributos y Estilos</a>
+            <a href="#listas">5. Listas y Bucles</a>
+        </div>
+        <div class="section-index">
+            <strong class="sz-label sz-muted">Componentes</strong>
+            <a href="#botones">6. Botones</a>
+            <a href="#inputs">7. Formularios</a>
+            <a href="#cards">8. Cards</a>
+            <a href="#modal">9. Modal</a>
+            <a href="#toast">10. Toast</a>
+        </div>
+        <div class="section-index">
+            <strong class="sz-label sz-muted">Componentes II</strong>
+            <a href="#tabs">11. Tabs</a>
+            <a href="#spinner">12. Spinner y Skeleton</a>
+            <a href="#avatar">13. Avatar</a>
+            <a href="#switch">14. Switch y Slider</a>
+            <a href="#tooltip">15. Tooltip</a>
+        </div>
+        <div class="section-index">
+            <strong class="sz-label sz-muted">Utilidades</strong>
+            <a href="#layout">16. Layout</a>
+            <a href="#tipografia">17. Tipografía</a>
+            <a href="#tabla">18. Tablas</a>
+            <a href="#animaciones">19. Animaciones</a>
+            <a href="#utilidades">20. Utilidades</a>
+            <a href="#temas">21. Temas claro/oscuro</a>
+            <a href="#app-components">22. Componentes de App</a>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 1. ESTADO Y REACTIVIDAD                                               -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card sz-mt-2" id="estado">
+    <h2 class="sz-h2">1. Estado y Reactividad <span class="pill">state()</span></h2>
+    <p class="sz-p">El núcleo de Spork UI es un <strong>Proxy ES2020</strong> que intercepta escrituras y actualiza el DOM de forma quirúrgica. Usa una caché de funciones compiladas (<code class="sz-mono">__fnCache</code>) que se invalida automáticamente al cambiar el estado — sin Virtual DOM, sin diffing.</p>
+
+    <div class="demo-box">
+        <p class="sz-body">Contador: <span class="sz-bold sz-mono" data-spork-text="contador"></span></p>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled" onclick="app.contador++">＋ Incrementar</button>
+            <button class="sz-btn sz-btn-outlined" onclick="app.contador--">－ Decrementar</button>
+            <button class="sz-btn sz-btn-text" onclick="app.contador=0">Reset</button>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Crear estado reactivo — devuelve un Proxy</span>
+<span class="kw">const</span> app = <span class="attr">state</span>({
+    contador: <span class="val">0</span>,
+    nombre: <span class="str">"Spork"</span>,
+    activo: <span class="kw">true</span>
+});
+
+<span class="cmt">// Cualquier escritura actualiza el DOM automáticamente</span>
+app.contador++;           <span class="cmt">// ✓ reactivo</span>
+app.nombre = <span class="str">"vspk"</span>;    <span class="cmt">// ✓ reactivo</span>
+app.contador = <span class="val">0</span>;       <span class="cmt">// ✓ reactivo</span>
+
+<span class="cmt">// Lectura directa sin efectos secundarios</span>
+<span class="kw">console</span>.<span class="attr">log</span>(app.contador); <span class="cmt">// lectura normal</span>
+
+<span class="cmt">// Múltiples objetos de estado independientes</span>
+<span class="kw">const</span> ui   = <span class="attr">state</span>({ visible: <span class="kw">true</span>, theme: <span class="str">"dark"</span> });
+<span class="kw">const</span> data = <span class="attr">state</span>({ items: [], loading: <span class="kw">false</span> });</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 2. BINDINGS                                                           -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="texto">
+    <h2 class="sz-h2">2. Bindings de Texto y Formularios</h2>
+    <p class="sz-p">Cinco atributos <code class="sz-mono">data-spork-*</code> cubren todos los casos de binding reactivo:</p>
+    <div class="sz-row sz-start sz-gap-2" style="flex-wrap:wrap">
+        <span class="pill">data-spork-text</span>
+        <span class="pill">data-spork-bind</span>
+        <span class="pill">data-spork-if</span>
+        <span class="pill">data-spork-class</span>
+        <span class="pill">data-spork-style</span>
+        <span class="pill">data-spork-attrs</span>
+    </div>
+
+    <div class="demo-box">
+        <div class="sz-field">
+            <label class="sz-label">Tu nombre:</label>
+            <input class="sz-input" type="text" data-spork-bind="nombre" placeholder="Escribe algo…">
+        </div>
+        <p class="sz-body">Hola, <span class="sz-bold sz-text-primary" data-spork-text="nombre"></span>
+            <span data-spork-if="nombre.length > 5"> 👋 (nombre largo)</span>
+        </p>
+        <div class="sz-field">
+            <label class="sz-label">Número:</label>
+            <input class="sz-input" type="number" data-spork-bind="numero">
+            <span class="sz-field-hint">Valor actual: <span data-spork-text="numero"></span></span>
+        </div>
+        <label class="sz-label">
+            <input type="checkbox" data-spork-bind="activo"> Checkbox reactivo
+        </label>
+        <select class="sz-select" data-spork-bind="opcion">
+            <option value="a">Opción A</option>
+            <option value="b">Opción B</option>
+            <option value="c">Opción C</option>
+        </select>
+        <p class="sz-caption">Seleccionado: <span data-spork-text="opcion"></span></p>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// data-spork-text — muestra valor como texto</span>
+<span class="tag">&lt;span</span> <span class="attr">data-spork-text</span>=<span class="str">"nombre"</span><span class="tag">&gt;&lt;/span&gt;</span>
+<span class="tag">&lt;span</span> <span class="attr">data-spork-text</span>=<span class="str">"'Hola ' + nombre"</span><span class="tag">&gt;&lt;/span&gt;</span>   <span class="cmt">// expresión JS</span>
+
+<span class="cmt">// data-spork-bind — two-way binding (input, checkbox, select)</span>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="str">"text"</span>     <span class="attr">data-spork-bind</span>=<span class="str">"nombre"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="str">"number"</span>  <span class="attr">data-spork-bind</span>=<span class="str">"numero"</span><span class="tag">&gt;</span>  <span class="cmt">// auto-convierte a Number</span>
+<span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="str">"checkbox"</span> <span class="attr">data-spork-bind</span>=<span class="str">"activo"</span><span class="tag">&gt;</span>  <span class="cmt">// Boolean</span>
+<span class="tag">&lt;select</span>             <span class="attr">data-spork-bind</span>=<span class="str">"opcion"</span><span class="tag">&gt;&lt;/select&gt;</span>
+
+<span class="cmt">// data-spork-if — muestra/oculta (display:none)</span>
+<span class="tag">&lt;div</span> <span class="attr">data-spork-if</span>=<span class="str">"activo"</span><span class="tag">&gt;</span>Visible si activo es true<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">data-spork-if</span>=<span class="str">"contador > 10"</span><span class="tag">&gt;</span>Expresión JS<span class="tag">&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 3. CONDICIONALES Y CLASES                                             -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="condicional">
+    <h2 class="sz-h2">3. Condicionales y Clases Dinámicas</h2>
+
+    <div class="demo-box">
+        <label class="sz-label"><input type="checkbox" data-spork-bind="mostrar"> Mostrar alerta</label>
+        <div class="sz-alert" data-spork-if="mostrar">✨ Aparezco cuando mostrar = true</div>
+        <div class="sz-alert sz-alert-error" data-spork-if="!mostrar">⚠️ Aparezco cuando mostrar = false</div>
+        <div class="sz-row">
+            <span class="sz-badge" data-spork-class='{"sz-active": mostrar}'>Badge dinámico</span>
+            <button class="sz-btn sz-btn-outlined" data-spork-class='{"sz-btn-filled": mostrar, "sz-btn-outlined": !mostrar}' onclick="app.mostrar=!app.mostrar">Toggle</button>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// data-spork-class — mapa clase:condición</span>
+<span class="tag">&lt;div</span> <span class="attr">data-spork-class</span>=<span class="str">'{"sz-active": seleccionado, "sz-disabled": cargando}'</span><span class="tag">&gt;</span>
+
+<span class="cmt">// data-spork-style — objeto de estilos reactivo</span>
+<span class="tag">&lt;div</span> <span class="attr">data-spork-style</span>=<span class="str">"{color: activo ? '#6750A4' : '#999', fontWeight: 700}"</span><span class="tag">&gt;</span>
+
+<span class="cmt">// data-spork-attrs — atributos HTML arbitrarios</span>
+<span class="tag">&lt;img</span> <span class="attr">data-spork-attrs</span>=<span class="str">'{"src": avatarUrl, "alt": nombre}'</span><span class="tag">&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">data-spork-attrs</span>=<span class="str">'{"disabled": !formularioValido}'</span><span class="tag">&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 4. ATTRS Y ESTILOS                                                    -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="attrs">
+    <h2 class="sz-h2">4. Atributos y Estilos en Línea</h2>
+
+    <div class="demo-box">
+        <label class="sz-label">Progreso: <span data-spork-text="progreso"></span>%</label>
+        <input class="sz-slider" type="range" min="0" max="100" data-spork-bind="progreso">
+        <div class="sz-progress">
+            <div class="sz-progress-bar" data-spork-attrs='{"style": "width:" + progreso + "%"}'></div>
+        </div>
+        <div data-spork-style="{color: progreso > 80 ? '#2e7d32' : progreso > 50 ? '#f57c00' : '#b3261e', fontWeight: 600, fontSize: '0.9rem'}">
+            Estado: <span data-spork-text="progreso > 80 ? '✅ Excelente' : progreso > 50 ? '⚠️ Regular' : '❌ Bajo'"></span>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Barra de progreso reactiva</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-progress"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-progress-bar"</span>
+         <span class="attr">data-spork-attrs</span>=<span class="str">'{"style": "width:" + progreso + "%"}'</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Estilos condicionales compuestos</span>
+<span class="tag">&lt;div</span> <span class="attr">data-spork-style</span>=<span class="str">"{
+    color: error ? 'var(--sz-error)' : 'inherit',
+    opacity: cargando ? 0.5 : 1,
+    transform: animando ? 'scale(1.05)' : 'none'
+}"</span><span class="tag">&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 5. LISTAS                                                             -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="listas">
+    <h2 class="sz-h2">5. Listas y Bucles <span class="pill">data-spork-for</span></h2>
+    <p class="sz-p">Renderiza arrays usando un contenedor con <code class="sz-mono">data-spork-for-src</code> y una plantilla <code class="sz-mono">&lt;template&gt;</code> con el mismo ID de referencia.</p>
+
+    <div class="demo-box">
+        <div class="sz-table-container">
+            <table class="sz-table sz-table-striped">
+                <thead><tr><th>Módulo</th><th>Estado</th><th>Acción</th></tr></thead>
+                <tbody id="modulos-list" data-spork-for-src="modulos" data-spork-for-var="mod">
+                </tbody>
+            </table>
+        </div>
+        <template data-spork-for-template="modulos-list">
+            <tr>
+                <td class="sz-mono" data-spork-text="mod.nombre"></td>
+                <td><span class="sz-badge" data-spork-text="mod.estado"></span></td>
+                <td><button class="sz-btn sz-btn-sm sz-btn-text">✏️</button></td>
+            </tr>
+        </template>
+        <button class="sz-btn sz-btn-outlined" onclick="app.modulos=[...app.modulos,{nombre:'nuevo-mod-'+Date.now().toString().slice(-4),estado:'Pendiente'}]">+ Añadir módulo</button>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Estructura obligatoria: contenedor + template con mismo ID</span>
+<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="str">"lista"</span>
+    <span class="attr">data-spork-for-src</span>=<span class="str">"items"</span>
+    <span class="attr">data-spork-for-var</span>=<span class="str">"item"</span><span class="tag">&gt;&lt;/ul&gt;</span>
+
+<span class="tag">&lt;template</span> <span class="attr">data-spork-for-template</span>=<span class="str">"lista"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;li</span> <span class="attr">data-spork-text</span>=<span class="str">"item.nombre"</span><span class="tag">&gt;&lt;/li&gt;</span>
+<span class="tag">&lt;/template&gt;</span>
+
+<span class="cmt">// Actualizar lista — asignar nuevo array dispara re-render</span>
+app.items = [...app.items, { nombre: <span class="str">"nuevo"</span> }];
+app.items = app.items.<span class="attr">filter</span>(i => i.activo);
+app.items = app.items.<span class="attr">sort</span>((a,b) => a.nombre.<span class="attr">localeCompare</span>(b.nombre));</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 6. BOTONES                                                            -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="botones">
+    <h2 class="sz-h2">6. Botones</h2>
+
+    <div class="demo-box">
+        <label class="sz-label">Variantes:</label>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled">Filled</button>
+            <button class="sz-btn sz-btn-outlined">Outlined</button>
+            <button class="sz-btn sz-btn-text">Text</button>
+            <button class="sz-btn sz-btn-danger">Danger</button>
+        </div>
+        <label class="sz-label">Tamaños:</label>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled sz-btn-sm">Pequeño</button>
+            <button class="sz-btn sz-btn-filled">Normal</button>
+            <button class="sz-btn sz-btn-filled sz-btn-lg">Grande</button>
+        </div>
+        <label class="sz-label">Estados:</label>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled" disabled>Disabled</button>
+            <button class="sz-btn sz-btn-filled sz-loading">Cargando</button>
+            <button class="sz-btn sz-btn-filled sz-btn-full">Ancho completo</button>
+        </div>
+        <label class="sz-label">Icono:</label>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled sz-btn-icon">⚡</button>
+            <button class="sz-btn sz-btn-outlined sz-btn-icon">🔍</button>
+            <button class="sz-btn sz-btn-filled">⬆️ Con texto</button>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled"</span><span class="tag">&gt;</span>Primario<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-outlined"</span><span class="tag">&gt;</span>Secundario<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-text"</span><span class="tag">&gt;</span>Texto<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-danger"</span><span class="tag">&gt;</span>Peligro<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled sz-btn-sm"</span><span class="tag">&gt;</span>Pequeño<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled sz-btn-lg"</span><span class="tag">&gt;</span>Grande<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled sz-loading"</span><span class="tag">&gt;</span>Cargando<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled sz-btn-icon"</span><span class="tag">&gt;</span>⚡<span class="tag">&lt;/button&gt;</span>
+<span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled sz-btn-full"</span><span class="tag">&gt;</span>100%<span class="tag">&lt;/button&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 7. FORMULARIOS                                                        -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="inputs">
+    <h2 class="sz-h2">7. Formularios e Inputs</h2>
+
+    <div class="demo-box">
+        <div class="sz-field">
+            <label class="sz-label">Input normal</label>
+            <input class="sz-input" type="text" placeholder="Escribe aquí…">
+            <span class="sz-field-hint">Texto de ayuda opcional</span>
+        </div>
+        <div class="sz-field">
+            <label class="sz-label">Input con error</label>
+            <input class="sz-input sz-input-error" type="email" value="correo_mal">
+            <span class="sz-field-error">Formato de email no válido</span>
+        </div>
+        <div class="sz-field">
+            <label class="sz-label">Input con éxito</label>
+            <input class="sz-input sz-input-success" type="text" value="usuario_disponible">
+        </div>
+        <div class="sz-field">
+            <label class="sz-label">Textarea</label>
+            <textarea class="sz-textarea" rows="3" placeholder="Escribe tu mensaje…"></textarea>
+        </div>
+        <div class="sz-field">
+            <label class="sz-label">Select</label>
+            <select class="sz-select">
+                <option>Elige una opción</option>
+                <option>Opción A</option>
+                <option>Opción B</option>
+            </select>
+        </div>
+        <div class="sz-field">
+            <label class="sz-label">Slider</label>
+            <input class="sz-slider" type="range" min="0" max="100" value="60">
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Campo con hint y error</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-field"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;label</span> <span class="attr">class</span>=<span class="str">"sz-label"</span><span class="tag">&gt;</span>Email<span class="tag">&lt;/label&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="str">"sz-input sz-input-error"</span> <span class="attr">type</span>=<span class="str">"email"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-field-error"</span><span class="tag">&gt;</span>Email inválido<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="str">"sz-input sz-input-success"</span><span class="tag">&gt;</span>   <span class="cmt">// éxito</span>
+<span class="tag">&lt;textarea</span> <span class="attr">class</span>=<span class="str">"sz-textarea"</span><span class="tag">&gt;&lt;/textarea&gt;</span>
+<span class="tag">&lt;select</span> <span class="attr">class</span>=<span class="str">"sz-select"</span><span class="tag">&gt;&lt;/select&gt;</span>
+<span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="str">"sz-slider"</span> <span class="attr">type</span>=<span class="str">"range"</span><span class="tag">&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 8. CARDS                                                              -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="cards">
+    <h2 class="sz-h2">8. Cards</h2>
+
+    <div class="demo-box">
+        <div class="sz-grid">
+            <div class="sz-card">
+                <h3 class="sz-h3">Card Normal</h3>
+                <p class="sz-caption">Con sombra y borde sutil.</p>
+                <button class="sz-btn sz-btn-outlined sz-btn-sm">Acción</button>
+            </div>
+            <div class="sz-card sz-card-flat">
+                <h3 class="sz-h3">Card Flat</h3>
+                <p class="sz-caption">Sin sombra, solo borde.</p>
+                <button class="sz-btn sz-btn-outlined sz-btn-sm">Acción</button>
+            </div>
+            <div class="sz-card sz-card-interactive sz-clickable">
+                <h3 class="sz-h3">Card Interactiva</h3>
+                <p class="sz-caption">Hover con elevación. Clic.</p>
+                <div class="sz-badge">Hover me</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-card"</span><span class="tag">&gt;</span>Card normal<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-card sz-card-flat"</span><span class="tag">&gt;</span>Sin sombra<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-card sz-card-interactive"</span><span class="tag">&gt;</span>Clickable<span class="tag">&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 9. MODAL                                                              -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="modal">
+    <h2 class="sz-h2">9. Modal</h2>
+
+    <div class="demo-box">
+        <button class="sz-btn sz-btn-filled" onclick="app.modalOpen=true">Abrir Modal</button>
+
+        <div class="sz-modal-overlay" data-spork-if="modalOpen" onclick="if(event.target===this)app.modalOpen=false">
+            <div class="sz-modal">
+                <div class="sz-modal-header">
+                    <span class="sz-modal-title">Confirmar acción</span>
+                    <button class="sz-modal-close" onclick="app.modalOpen=false">✕</button>
+                </div>
+                <div class="sz-modal-body">
+                    ¿Estás seguro de que quieres continuar? Esta acción no se puede deshacer.
+                </div>
+                <div class="sz-modal-footer">
+                    <button class="sz-btn sz-btn-outlined sz-btn-sm" onclick="app.modalOpen=false">Cancelar</button>
+                    <button class="sz-btn sz-btn-filled sz-btn-sm" onclick="app.modalOpen=false;app.modalResult='Aceptado'">Aceptar</button>
+                </div>
+            </div>
+        </div>
+        <p class="sz-caption" data-spork-if="modalResult">Resultado: <span data-spork-text="modalResult"></span></p>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-modal-overlay"</span>
+     <span class="attr">data-spork-if</span>=<span class="str">"abierto"</span>
+     <span class="attr">onclick</span>=<span class="str">"if(event.target===this) app.abierto=false"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-modal"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-modal-header"</span><span class="tag">&gt;</span>
+            <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-modal-title"</span><span class="tag">&gt;</span>Título<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-modal-close"</span> <span class="attr">onclick</span>=<span class="str">"app.abierto=false"</span><span class="tag">&gt;</span>✕<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-modal-body"</span><span class="tag">&gt;</span>Contenido<span class="tag">&lt;/div&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-modal-footer"</span><span class="tag">&gt;</span>
+            <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-outlined"</span><span class="tag">&gt;</span>Cancelar<span class="tag">&lt;/button&gt;</span>
+            <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled"</span><span class="tag">&gt;</span>Aceptar<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 10. TOAST                                                             -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="toast">
+    <h2 class="sz-h2">10. Toast / Notificaciones</h2>
+
+    <div class="demo-box">
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled sz-btn-sm" onclick="showToast('info')">Toast Info</button>
+            <button class="sz-btn sz-btn-filled sz-btn-sm" style="background:#2e7d32" onclick="showToast('success')">✅ Éxito</button>
+            <button class="sz-btn sz-btn-danger sz-btn-sm" onclick="showToast('error')">❌ Error</button>
+            <button class="sz-btn sz-btn-outlined sz-btn-sm" onclick="showToast('warning')">⚠️ Warning</button>
+        </div>
+        <div class="sz-toast-container" id="toast-container"></div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Helper para mostrar toasts</span>
+<span class="kw">function</span> <span class="attr">showToast</span>(tipo, msg, ms = <span class="val">3000</span>) {
+    <span class="kw">const</span> c = document.<span class="attr">getElementById</span>(<span class="str">'toast-container'</span>);
+    <span class="kw">const</span> t = document.<span class="attr">createElement</span>(<span class="str">'div'</span>);
+    t.className = <span class="str">`sz-toast sz-toast-${tipo}`</span>;
+    t.textContent = msg;
+    c.<span class="attr">appendChild</span>(t);
+    <span class="attr">setTimeout</span>(() => t.<span class="attr">remove</span>(), ms);
+}
+
+<span class="cmt">// HTML del contenedor (posición fixed)</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-toast-container"</span> <span class="attr">id</span>=<span class="str">"toasts"</span><span class="tag">&gt;&lt;/div&gt;</span>
+
+<span class="cmt">// Tipos: (sin clase extra), sz-toast-success, sz-toast-error, sz-toast-warning</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 11. TABS                                                              -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="tabs">
+    <h2 class="sz-h2">11. Tabs</h2>
+
+    <div class="demo-box">
+        <div class="sz-tabs">
+            <div class="sz-tab-list">
+                <button class="sz-tab-btn sz-active" onclick="setTab(0,this)">General</button>
+                <button class="sz-tab-btn" onclick="setTab(1,this)">Avanzado</button>
+                <button class="sz-tab-btn" onclick="setTab(2,this)">Seguridad</button>
+            </div>
+            <div class="sz-tab-panel sz-active" id="tab-0">
+                <p class="sz-body">⚙️ Contenido del panel <strong>General</strong>. Configura las opciones básicas.</p>
+            </div>
+            <div class="sz-tab-panel" id="tab-1">
+                <p class="sz-body">🔧 Panel <strong>Avanzado</strong>. Opciones para usuarios expertos.</p>
+            </div>
+            <div class="sz-tab-panel" id="tab-2">
+                <p class="sz-body">🔒 Panel de <strong>Seguridad</strong>. Gestiona permisos y accesos.</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tabs"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tab-list"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-tab-btn sz-active"</span> <span class="attr">onclick</span>=<span class="str">"setTab(0,this)"</span><span class="tag">&gt;</span>Tab 1<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-tab-btn"</span> <span class="attr">onclick</span>=<span class="str">"setTab(1,this)"</span><span class="tag">&gt;</span>Tab 2<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tab-panel sz-active"</span> <span class="attr">id</span>=<span class="str">"tab-0"</span><span class="tag">&gt;</span>Panel 1<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tab-panel"</span> <span class="attr">id</span>=<span class="str">"tab-1"</span><span class="tag">&gt;</span>Panel 2<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="kw">function</span> <span class="attr">setTab</span>(i, btn) {
+    document.<span class="attr">querySelectorAll</span>(<span class="str">'.sz-tab-btn'</span>).<span class="attr">forEach</span>(b => b.classList.<span class="attr">remove</span>(<span class="str">'sz-active'</span>));
+    document.<span class="attr">querySelectorAll</span>(<span class="str">'.sz-tab-panel'</span>).<span class="attr">forEach</span>(p => p.classList.<span class="attr">remove</span>(<span class="str">'sz-active'</span>));
+    btn.classList.<span class="attr">add</span>(<span class="str">'sz-active'</span>);
+    document.<span class="attr">getElementById</span>(<span class="str">`tab-${i}`</span>).classList.<span class="attr">add</span>(<span class="str">'sz-active'</span>);
+}</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 12. SPINNER Y SKELETON                                                -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="spinner">
+    <h2 class="sz-h2">12. Spinner y Skeleton</h2>
+
+    <div class="demo-box">
+        <label class="sz-label">Spinners:</label>
+        <div class="sz-row">
+            <div class="sz-spinner sz-spinner-sm"></div>
+            <div class="sz-spinner"></div>
+            <div class="sz-spinner sz-spinner-lg"></div>
+        </div>
+        <div class="sz-spinner-center">
+            <div class="sz-spinner sz-spinner-lg"></div>
+        </div>
+        <label class="sz-label sz-mt-1">Skeletons:</label>
+        <div class="sz-skeleton sz-skeleton-title sz-mb-1"></div>
+        <div class="sz-skeleton sz-skeleton-text sz-mb-1"></div>
+        <div class="sz-skeleton sz-skeleton-text" style="width:70%"></div>
+        <div class="sz-row sz-mt-1">
+            <div class="sz-skeleton sz-skeleton-avatar"></div>
+            <div class="sz-col sz-flex-1">
+                <div class="sz-skeleton sz-skeleton-text"></div>
+                <div class="sz-skeleton sz-skeleton-text" style="width:55%"></div>
+            </div>
+        </div>
+        <div class="sz-skeleton sz-skeleton-card"></div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Spinners</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-spinner"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-spinner sz-spinner-sm"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-spinner sz-spinner-lg"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-spinner-center"</span><span class="tag">&gt;&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-spinner"</span><span class="tag">&gt;&lt;/div&gt;&lt;/div&gt;</span>
+
+<span class="cmt">// Skeletons — animar mientras carga</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-skeleton sz-skeleton-title"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-skeleton sz-skeleton-text"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-skeleton sz-skeleton-avatar"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-skeleton sz-skeleton-card"</span><span class="tag">&gt;&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-skeleton sz-skeleton-btn"</span><span class="tag">&gt;&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 13. AVATAR                                                            -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="avatar">
+    <h2 class="sz-h2">13. Avatar</h2>
+
+    <div class="demo-box">
+        <div class="sz-row">
+            <div class="sz-avatar sz-avatar-sm">VS</div>
+            <div class="sz-avatar">SP</div>
+            <div class="sz-avatar sz-avatar-lg">⚡</div>
+            <div class="sz-avatar sz-avatar-xl">🚀</div>
+        </div>
+        <label class="sz-label">Grupo de avatares:</label>
+        <div class="sz-avatar-group">
+            <div class="sz-avatar sz-avatar-sm" style="background:color-mix(in srgb,#e91e63 20%,transparent);color:#e91e63">MR</div>
+            <div class="sz-avatar sz-avatar-sm" style="background:color-mix(in srgb,#2196f3 20%,transparent);color:#2196f3">JD</div>
+            <div class="sz-avatar sz-avatar-sm" style="background:color-mix(in srgb,#4caf50 20%,transparent);color:#4caf50">AK</div>
+            <div class="sz-avatar sz-avatar-sm">+5</div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar"</span><span class="tag">&gt;</span>AB<span class="tag">&lt;/div&gt;</span>              <span class="cmt">// iniciales</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-sm"</span><span class="tag">&gt;</span>AB<span class="tag">&lt;/div&gt;</span>    <span class="cmt">// pequeño</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-lg"</span><span class="tag">&gt;</span>AB<span class="tag">&lt;/div&gt;</span>    <span class="cmt">// grande</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-xl"</span><span class="tag">&gt;</span>AB<span class="tag">&lt;/div&gt;</span>    <span class="cmt">// extra grande</span>
+
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar"</span><span class="tag">&gt;&lt;img</span> <span class="attr">src</span>=<span class="str">"foto.jpg"</span><span class="tag">&gt;&lt;/div&gt;</span>  <span class="cmt">// con imagen</span>
+
+<span class="cmt">// Grupo apilado</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar-group"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-sm"</span><span class="tag">&gt;</span>A<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-sm"</span><span class="tag">&gt;</span>B<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-avatar sz-avatar-sm"</span><span class="tag">&gt;</span>+3<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 14. SWITCH Y SLIDER                                                   -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="switch">
+    <h2 class="sz-h2">14. Switch y Slider</h2>
+
+    <div class="demo-box">
+        <label class="sz-switch">
+            <input type="checkbox" data-spork-bind="switchA">
+            <div class="sz-switch-track"><div class="sz-switch-thumb"></div></div>
+            <span class="sz-switch-label" data-spork-text="switchA ? 'Activado' : 'Desactivado'"></span>
+        </label>
+        <label class="sz-switch">
+            <input type="checkbox" checked>
+            <div class="sz-switch-track"><div class="sz-switch-thumb"></div></div>
+            <span class="sz-switch-label">Notificaciones</span>
+        </label>
+        <label class="sz-switch">
+            <input type="checkbox">
+            <div class="sz-switch-track"><div class="sz-switch-thumb"></div></div>
+            <span class="sz-switch-label">Modo oscuro</span>
+        </label>
+        <div class="sz-divider"></div>
+        <label class="sz-label">Volumen: <span data-spork-text="volumen"></span>%</label>
+        <input class="sz-slider" type="range" min="0" max="100" data-spork-bind="volumen">
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Switch — checkbox estilizado como toggle</span>
+<span class="tag">&lt;label</span> <span class="attr">class</span>=<span class="str">"sz-switch"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="str">"checkbox"</span> <span class="attr">data-spork-bind</span>=<span class="str">"activado"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-switch-track"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-switch-thumb"</span><span class="tag">&gt;&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-switch-label"</span><span class="tag">&gt;</span>Texto<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/label&gt;</span>
+
+<span class="cmt">// Slider</span>
+<span class="tag">&lt;input</span> <span class="attr">class</span>=<span class="str">"sz-slider"</span> <span class="attr">type</span>=<span class="str">"range"</span> <span class="attr">min</span>=<span class="str">"0"</span> <span class="attr">max</span>=<span class="str">"100"</span> <span class="attr">data-spork-bind</span>=<span class="str">"volumen"</span><span class="tag">&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 15. TOOLTIP                                                           -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="tooltip">
+    <h2 class="sz-h2">15. Tooltip</h2>
+
+    <div class="demo-box">
+        <div class="sz-row">
+            <div class="sz-tooltip-wrap">
+                <button class="sz-btn sz-btn-filled">Hover aquí</button>
+                <div class="sz-tooltip">Soy un tooltip ⚡</div>
+            </div>
+            <div class="sz-tooltip-wrap">
+                <span class="sz-badge sz-clickable">ℹ️ Info</span>
+                <div class="sz-tooltip">Información adicional sobre este elemento</div>
+            </div>
+            <div class="sz-tooltip-wrap">
+                <button class="sz-btn sz-btn-icon sz-btn-outlined">?</button>
+                <div class="sz-tooltip">Ayuda contextual</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip-wrap"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled"</span><span class="tag">&gt;</span>Elemento<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip"</span><span class="tag">&gt;</span>Texto del tooltip<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+<span class="cmt">// El tooltip aparece al hacer hover — CSS puro, sin JS</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 16. LAYOUT                                                            -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="layout">
+    <h2 class="sz-h2">16. Layout</h2>
+
+    <div class="demo-box">
+        <label class="sz-label">sz-row — fila horizontal centrada:</label>
+        <div class="sz-row" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <div class="sz-badge">A</div><div class="sz-badge">B</div><div class="sz-badge">C</div>
+        </div>
+        <label class="sz-label">sz-col — columna vertical:</label>
+        <div class="sz-col" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <div class="sz-badge">Arriba</div><div class="sz-badge">Medio</div><div class="sz-badge">Abajo</div>
+        </div>
+        <label class="sz-label">sz-grid — rejilla responsive:</label>
+        <div class="sz-grid" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <div class="sz-badge">1</div><div class="sz-badge">2</div><div class="sz-badge">3</div><div class="sz-badge">4</div>
+        </div>
+        <label class="sz-label">sz-spread — espacio entre extremos:</label>
+        <div class="sz-row sz-spread" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <div class="sz-badge">Izquierda</div><div class="sz-badge">Derecha</div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-page"</span><span class="tag">&gt;</span>           <span class="cmt">// contenedor raíz, centrado, max-width responsive</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-row"</span><span class="tag">&gt;</span>            <span class="cmt">// fila flex, gap, wrap</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-col"</span><span class="tag">&gt;</span>            <span class="cmt">// columna flex, gap</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-grid"</span><span class="tag">&gt;</span>           <span class="cmt">// grid 1→2→3 cols según pantalla</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-grid-auto"</span><span class="tag">&gt;</span>      <span class="cmt">// grid auto-fill minmax(200px,1fr)</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-row sz-spread"</span><span class="tag">&gt;</span>  <span class="cmt">// space-between</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-row sz-center"</span><span class="tag">&gt;</span>  <span class="cmt">// centrado</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-row sz-start"</span><span class="tag">&gt;</span>   <span class="cmt">// alineado al inicio</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-grow"</span><span class="tag">&gt;</span>           <span class="cmt">// flex:1 — ocupa espacio disponible</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-container"</span><span class="tag">&gt;</span>     <span class="cmt">// max-width:32rem centrado</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 17. TIPOGRAFÍA                                                        -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="tipografia">
+    <h2 class="sz-h2">17. Tipografía</h2>
+
+    <div class="demo-box">
+        <p class="sz-h1">sz-h1 — Título principal</p>
+        <p class="sz-h2">sz-h2 — Subtítulo de sección</p>
+        <p class="sz-h3">sz-h3 — Título de card</p>
+        <p class="sz-h4">sz-h4 — Título menor</p>
+        <p class="sz-subtitle">sz-subtitle — Subtítulo destacado</p>
+        <p class="sz-p">sz-p / sz-body — Párrafo de texto normal con line-height optimizado.</p>
+        <p class="sz-label">sz-label — Etiqueta de formulario</p>
+        <p class="sz-caption">sz-caption — Texto secundario pequeño</p>
+        <p class="sz-mono">sz-mono — Código monospace</p>
+        <div class="sz-divider"></div>
+        <div class="sz-row sz-wrap">
+            <span class="sz-text-primary">sz-text-primary</span>
+            <span class="sz-text-error">sz-text-error</span>
+            <span class="sz-text-success">sz-text-success</span>
+            <span class="sz-text-warning">sz-text-warning</span>
+            <span class="sz-text-muted">sz-text-muted</span>
+            <span class="sz-bold">sz-bold</span>
+            <span class="sz-muted">sz-muted</span>
+            <span class="sz-truncate" style="max-width:120px">sz-truncate texto largo que se corta</span>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 18. TABLAS                                                            -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="tabla">
+    <h2 class="sz-h2">18. Tablas</h2>
+
+    <div class="demo-box">
+        <div class="sz-table-container">
+            <table class="sz-table sz-table-striped">
+                <thead>
+                    <tr><th>Clase</th><th>Descripción</th><th>Estado</th></tr>
+                </thead>
+                <tbody>
+                    <tr><td class="sz-mono">sz-table</td><td>Tabla base</td><td><span class="sz-badge">Estable</span></td></tr>
+                    <tr><td class="sz-mono">sz-table-striped</td><td>Filas alternadas</td><td><span class="sz-badge">Estable</span></td></tr>
+                    <tr><td class="sz-mono">sz-table-container</td><td>Scroll horizontal</td><td><span class="sz-badge">Estable</span></td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-table-container"</span><span class="tag">&gt;</span>    <span class="cmt">// scroll horizontal en móvil</span>
+    <span class="tag">&lt;table</span> <span class="attr">class</span>=<span class="str">"sz-table sz-table-striped"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;thead&gt;&lt;tr&gt;&lt;th&gt;</span>Col A<span class="tag">&lt;/th&gt;&lt;/tr&gt;&lt;/thead&gt;</span>
+        <span class="tag">&lt;tbody&gt;&lt;tr&gt;&lt;td&gt;</span>Dato<span class="tag">&lt;/td&gt;&lt;/tr&gt;&lt;/tbody&gt;</span>
+    <span class="tag">&lt;/table&gt;</span>
+<span class="tag">&lt;/div&gt;</span></div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 19. ANIMACIONES                                                       -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="animaciones">
+    <h2 class="sz-h2">19. Animaciones</h2>
+
+    <div class="demo-box">
+        <div class="sz-row">
+            <div class="sz-card sz-card-flat sz-fade-in" style="padding:10px 16px"><span class="sz-mono">sz-fade-in</span></div>
+            <div class="sz-card sz-card-flat sz-slide-up" style="padding:10px 16px"><span class="sz-mono">sz-slide-up</span></div>
+            <div class="sz-card sz-card-flat sz-slide-down" style="padding:10px 16px"><span class="sz-mono">sz-slide-down</span></div>
+        </div>
+        <div class="sz-row">
+            <span class="sz-bounce">⚡</span>
+            <span class="sz-pulse sz-badge">sz-pulse</span>
+            <div class="sz-spinner"></div>
+        </div>
+        <button class="sz-btn sz-btn-outlined" onclick="restartAnim(this)">↺ Reiniciar animaciones</button>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-fade-in"</span><span class="tag">&gt;</span>   <span class="cmt">// opacidad 0→1 + translateY</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-slide-up"</span><span class="tag">&gt;</span>  <span class="cmt">// entra desde abajo</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-slide-down"</span><span class="tag">&gt;</span><span class="cmt">// entra desde arriba</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-bounce"</span><span class="tag">&gt;</span>    <span class="cmt">// rebote infinito</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-pulse"</span><span class="tag">&gt;</span>     <span class="cmt">// parpadeo suave infinito</span>
+
+<span class="cmt">// Trigger al añadir elemento al DOM</span>
+el.classList.<span class="attr">remove</span>(<span class="str">'sz-fade-in'</span>);
+<span class="attr">requestAnimationFrame</span>(() => el.classList.<span class="attr">add</span>(<span class="str">'sz-fade-in'</span>));</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 20. UTILIDADES                                                        -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="utilidades">
+    <h2 class="sz-h2">20. Utilidades</h2>
+
+    <div class="demo-box">
+        <label class="sz-label">Sombras:</label>
+        <div class="sz-row">
+            <div class="sz-card sz-card-flat sz-shadow-sm" style="padding:8px 12px">sm</div>
+            <div class="sz-card sz-card-flat sz-shadow" style="padding:8px 12px">md</div>
+            <div class="sz-card sz-card-flat sz-shadow-lg" style="padding:8px 12px">lg</div>
+            <div class="sz-card sz-card-flat sz-shadow-xl" style="padding:8px 12px">xl</div>
+        </div>
+        <label class="sz-label">Border radius:</label>
+        <div class="sz-row">
+            <div class="sz-btn sz-btn-filled sz-rounded-none">none</div>
+            <div class="sz-btn sz-btn-filled sz-rounded-sm">sm</div>
+            <div class="sz-btn sz-btn-filled sz-rounded">md</div>
+            <div class="sz-btn sz-btn-filled sz-rounded-lg">lg</div>
+            <div class="sz-btn sz-btn-filled sz-rounded-full">full</div>
+        </div>
+        <label class="sz-label">Gap:</label>
+        <div class="sz-row sz-gap-0" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <span class="sz-badge">gap-0</span><span class="sz-badge">sin</span><span class="sz-badge">espacio</span>
+        </div>
+        <div class="sz-row sz-gap-6" style="background:color-mix(in srgb,var(--sz-primary) 8%,transparent);border-radius:8px;padding:8px">
+            <span class="sz-badge">gap-6</span><span class="sz-badge">mucho</span><span class="sz-badge">espacio</span>
+        </div>
+        <label class="sz-label">Estados:</label>
+        <div class="sz-row">
+            <button class="sz-btn sz-btn-filled sz-disabled">sz-disabled</button>
+            <button class="sz-btn sz-btn-filled sz-selected">sz-selected</button>
+            <span class="sz-badge sz-loading">sz-loading</span>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Sombras</span>
+sz-shadow-sm  sz-shadow  sz-shadow-lg  sz-shadow-xl  sz-shadow-none
+
+<span class="cmt">// Border radius</span>
+sz-rounded-none  sz-rounded-sm  sz-rounded  sz-rounded-lg  sz-rounded-xl  sz-rounded-full
+
+<span class="cmt">// Gap (flex/grid)</span>
+sz-gap-0  sz-gap-1  sz-gap-2  sz-gap-3  sz-gap-4  sz-gap-5  sz-gap-6  sz-gap-8
+
+<span class="cmt">// Dimensiones</span>
+sz-w-full  sz-w-half  sz-w-auto  sz-h-full  sz-h-screen
+sz-max-w-sm  sz-max-w-md  sz-max-w-lg  sz-max-w-xl  sz-max-w-full
+
+<span class="cmt">// Overflow</span>
+sz-overflow-hidden  sz-overflow-auto  sz-overflow-x-auto  sz-overflow-y-auto
+
+<span class="cmt">// Posición</span>
+sz-relative  sz-absolute  sz-fixed  sz-sticky
+
+<span class="cmt">// Estado</span>
+sz-disabled  sz-selected  sz-loading  sz-active  sz-clickable  sz-hoverable
+
+<span class="cmt">// Espaciado</span>
+sz-mt-1  sz-mt-2  sz-mt-3  sz-mb-1  sz-mb-2  sz-mb-3
+sz-p-0   sz-p-1   sz-p-2   sz-p-3   sz-m-0</div>
+</div>
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 21. TEMAS                                                             -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="temas">
+    <h2 class="sz-h2">21. Temas Claro / Oscuro</h2>
+    <p class="sz-p">Spork CSS usa variables CSS para temas. El tema claro es el predeterminado (<code class="sz-mono">:root</code>), el oscuro se activa con <code class="sz-mono">.sz-dark</code> o <code class="sz-mono">data-theme="dark"</code>. También respeta <code class="sz-mono">prefers-color-scheme</code> automáticamente sin JS.</p>
+
+    <div class="demo-box">
+        <div class="sz-row sz-spread">
+            <span class="sz-label">Tema actual: <strong data-spork-text="temaOscuro ? '🌙 Oscuro' : '☀️ Claro'"></strong></span>
+            <label class="sz-switch">
+                <input type="checkbox" data-spork-bind="temaOscuro" onchange="document.body.classList.toggle('sz-dark', app.temaOscuro)">
+                <div class="sz-switch-track"><div class="sz-switch-thumb"></div></div>
+                <span class="sz-switch-label">Modo oscuro</span>
+            </label>
+        </div>
+        <div class="sz-divider"></div>
+        <p class="sz-caption">Prueba el toggle — toda la página cambia de tema con transición suave.</p>
+        <div class="sz-row">
+            <div class="sz-card sz-card-flat sz-light sz-rounded-lg" style="padding:16px;flex:1">
+                <p class="sz-label">☀️ Forzado claro</p>
+                <p class="sz-caption">Usa <code class="sz-mono">.sz-light</code> para forzar tema claro en un elemento concreto, aunque el resto de la página esté en oscuro.</p>
+                <button class="sz-btn sz-btn-filled sz-btn-sm">Botón</button>
+            </div>
+            <div class="sz-card sz-card-flat sz-dark sz-rounded-lg" style="padding:16px;flex:1">
+                <p class="sz-label">🌙 Forzado oscuro</p>
+                <p class="sz-caption">Usa <code class="sz-mono">.sz-dark</code> para forzar tema oscuro en un elemento concreto.</p>
+                <button class="sz-btn sz-btn-filled sz-btn-sm">Botón</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Toggle con JS</span>
+document.body.classList.toggle(<span class="str">sz-dark</span>);
+
+<span class="cmt">// Con estado reactivo Spork</span>
+<span class="tag">lt;body</span> <span class="attr">data-spork-class</span>=<span class="str">{sz-dark: temaOscuro}</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
+
+<span class="cmt">// data-theme funciona igual que la clase</span>
+document.documentElement.setAttribute(<span class="str">data-theme</span>, <span class="str">dark</span>);
+document.documentElement.setAttribute(<span class="str">data-theme</span>, <span class="str">light</span>);
+
+<span class="cmt">// Forzar claro/oscuro en un elemento concreto</span>
+<span class="tag">lt;div</span> <span class="attr">class</span>=<span class="str">"sz-light"</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>Siempre claro<span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->lt;/div<!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
+<span class="tag">lt;div</span> <span class="attr">class</span>=<span class="str">"sz-dark"</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>Siempre oscuro<span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->lt;/div<!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
+
+<span class="cmt">// Sin JS — respeta prefers-color-scheme automáticamente</span>
+<span class="cmt">// :root sin .sz-light ni .sz-dark → sigue la preferencia del sistema</span></div>
+</div>
+
+
+<div class="sz-footer sz-center">
+    <p class="sz-caption">Spork UI v3.0 — Vanilla JS · Sin dependencias · Mobile-first</p>
+</div>
+
+
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<!-- 22. COMPONENTES DE APP                                                -->
+<!-- ══════════════════════════════════════════════════════════════════════ -->
+<div class="sz-card" id="app-components">
+    <h2 class="sz-h2">22. Componentes de App</h2>
+    <p class="sz-p">Layout completo para aplicaciones de escritorio: toolbar, sidebar, main, statusbar — todo en un grid CSS sin JS.</p>
+
+    <!-- App Shell demo -->
+    <div class="demo-box">
+        <label class="sz-label">App Shell completo (miniatura):</label>
+        <div style="height:300px;border-radius:12px;overflow:hidden;border:1px solid color-mix(in srgb,var(--sz-on-surface) 10%,transparent)">
+            <div class="sz-app-shell" style="height:300px">
+                <!-- Toolbar -->
+                <div class="sz-toolbar">
+                    <button class="sz-toolbar-btn">☰</button>
+                    <span class="sz-toolbar-title">Mi App Spork</span>
+                    <button class="sz-toolbar-btn sz-active" title="Guardar">💾</button>
+                    <button class="sz-toolbar-btn" title="Ejecutar">▶️</button>
+                    <div class="sz-toolbar-sep"></div>
+                    <button class="sz-toolbar-btn" title="Configuración">⚙️</button>
+                </div>
+                <!-- Sidebar -->
+                <div class="sz-sidebar" style="width:160px">
+                    <div class="sz-sidebar-section">
+                        <div class="sz-sidebar-section-title">Proyecto</div>
+                        <div class="sz-sidebar-item sz-active"><span class="sz-sidebar-icon">📄</span><span class="sz-sidebar-label">main.spk</span></div>
+                        <div class="sz-sidebar-item"><span class="sz-sidebar-icon">📄</span><span class="sz-sidebar-label">utils.spk</span></div>
+                        <div class="sz-sidebar-item"><span class="sz-sidebar-icon">🎨</span><span class="sz-sidebar-label">styles.css</span></div>
+                    </div>
+                    <div class="sz-sidebar-divider"></div>
+                    <div class="sz-sidebar-section">
+                        <div class="sz-sidebar-section-title">Herramientas</div>
+                        <div class="sz-sidebar-item"><span class="sz-sidebar-icon">🔍</span><span class="sz-sidebar-label">Buscar</span></div>
+                        <div class="sz-sidebar-item"><span class="sz-sidebar-icon">⚡</span><span class="sz-sidebar-label">Consola</span><span class="sz-sidebar-badge">3</span></div>
+                    </div>
+                </div>
+                <!-- Main -->
+                <div class="sz-main" style="padding:16px;font-family:ui-monospace,monospace;font-size:.8rem;background:var(--sz-bg)">
+                    <span style="color:#ff7b72">def</span> <span style="color:#79c0ff">main</span>() {<br>
+                    &nbsp;&nbsp;<span style="color:#ff7b72">print</span>(<span style="color:#a5d6ff">"Hola Spork"</span>)<br>
+                    }
+                </div>
+                <!-- Statusbar -->
+                <div class="sz-statusbar">
+                    <div class="sz-statusbar-item">⚡ Spork v2</div>
+                    <div class="sz-statusbar-sep"></div>
+                    <div class="sz-statusbar-item">main.spk</div>
+                    <div class="sz-statusbar-spacer"></div>
+                    <div class="sz-statusbar-item">Ln 3, Col 1</div>
+                    <div class="sz-statusbar-sep"></div>
+                    <div class="sz-statusbar-item">UTF-8</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// App Shell — grid CSS automático</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-app-shell"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-toolbar"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-toolbar-btn"</span><span class="tag">&gt;</span>☰<span class="tag">&lt;/button&gt;</span>
+        <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-toolbar-title"</span><span class="tag">&gt;</span>Mi App<span class="tag">&lt;/span&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-toolbar-drag"</span><span class="tag">&gt;&lt;/div&gt;</span>    <span class="cmt">// draggable en frameless</span>
+        <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-toolbar-btn"</span><span class="tag">&gt;</span>⚙️<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-sidebar"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-section"</span><span class="tag">&gt;</span>
+            <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-section-title"</span><span class="tag">&gt;</span>Sección<span class="tag">&lt;/div&gt;</span>
+            <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-item sz-active"</span><span class="tag">&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-icon"</span><span class="tag">&gt;</span>📄<span class="tag">&lt;/span&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-label"</span><span class="tag">&gt;</span>Archivo<span class="tag">&lt;/span&gt;</span>
+                <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-sidebar-badge"</span><span class="tag">&gt;</span>3<span class="tag">&lt;/span&gt;</span>
+            <span class="tag">&lt;/div&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-main"</span><span class="tag">&gt;</span>Contenido principal<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-statusbar"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-statusbar-item"</span><span class="tag">&gt;</span>Listo<span class="tag">&lt;/div&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-statusbar-spacer"</span><span class="tag">&gt;&lt;/div&gt;</span>
+        <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-statusbar-item"</span><span class="tag">&gt;</span>UTF-8<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Sin sidebar</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-app-shell sz-no-sidebar"</span><span class="tag">&gt;</span>
+<span class="cmt">// Sidebar colapsada (solo iconos)</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-sidebar sz-collapsed"</span><span class="tag">&gt;</span></div>
+</div>
+
+<!-- Context Menu -->
+<div class="sz-card">
+    <h2 class="sz-h2">Context Menu</h2>
+    <div class="demo-box">
+        <button class="sz-btn sz-btn-outlined" oncontextmenu="showCtx(event)" onclick="showCtx(event)">
+            Clic derecho (o clic) para menú contextual
+        </button>
+        <div class="sz-context-menu" id="ctx-demo" style="display:none;position:relative;box-shadow:none;border-radius:10px">
+            <div class="sz-context-item"><span class="sz-context-item-icon">✏️</span>Editar<span class="sz-context-item-shortcut"><kbd>Ctrl+E</kbd></span></div>
+            <div class="sz-context-item"><span class="sz-context-item-icon">📋</span>Copiar<span class="sz-context-item-shortcut"><kbd>Ctrl+C</kbd></span></div>
+            <div class="sz-context-item"><span class="sz-context-item-icon">📌</span>Duplicar</div>
+            <div class="sz-context-sep"></div>
+            <div class="sz-context-item sz-disabled"><span class="sz-context-item-icon">🔗</span>Compartir</div>
+            <div class="sz-context-sep"></div>
+            <div class="sz-context-item sz-danger"><span class="sz-context-item-icon">🗑️</span>Eliminar<span class="sz-context-item-shortcut"><kbd>Del</kbd></span></div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-context-menu"</span> <span class="attr">id</span>=<span class="str">"ctx"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-context-item"</span><span class="tag">&gt;</span>
+        <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-context-item-icon"</span><span class="tag">&gt;</span>✏️<span class="tag">&lt;/span&gt;</span>
+        Editar
+        <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-context-item-shortcut"</span><span class="tag">&gt;&lt;kbd&gt;</span>Ctrl+E<span class="tag">&lt;/kbd&gt;&lt;/span&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-context-sep"</span><span class="tag">&gt;&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-context-item sz-danger"</span><span class="tag">&gt;</span>🗑️ Eliminar<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-context-item sz-disabled"</span><span class="tag">&gt;</span>Deshabilitado<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="kw">function</span> <span class="attr">showCtx</span>(e) {
+    e.<span class="attr">preventDefault</span>();
+    <span class="kw">const</span> m = document.<span class="attr">getElementById</span>(<span class="str">'ctx'</span>);
+    m.style.cssText = <span class="str">`display:block;left:${e.clientX}px;top:${e.clientY}px`</span>;
+    document.<span class="attr">addEventListener</span>(<span class="str">'click'</span>, () => m.style.display=<span class="str">'none'</span>, {<span class="attr">once</span>:<span class="kw">true</span>});
+}</div>
+</div>
+
+<!-- Panels -->
+<div class="sz-card">
+    <h2 class="sz-h2">Paneles divididos</h2>
+    <div class="demo-box">
+        <div class="sz-panels" style="height:160px;border-radius:10px;overflow:hidden;border:1px solid color-mix(in srgb,var(--sz-on-surface) 10%,transparent)">
+            <div class="sz-panel" style="padding:12px;min-width:80px">
+                <p class="sz-caption sz-bold">Panel A</p>
+                <p class="sz-caption">Contenido izquierdo</p>
+            </div>
+            <div class="sz-panel-resizer" id="resizer-demo"></div>
+            <div class="sz-panel" style="padding:12px;min-width:80px">
+                <p class="sz-caption sz-bold">Panel B</p>
+                <p class="sz-caption">Contenido derecho</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panels"</span><span class="tag">&gt;</span>              <span class="cmt">// horizontal</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panel"</span><span class="tag">&gt;</span>Panel A<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panel-resizer"</span><span class="tag">&gt;&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panel"</span><span class="tag">&gt;</span>Panel B<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panels sz-vertical"</span><span class="tag">&gt;</span>   <span class="cmt">// vertical</span></div>
+</div>
+
+<!-- Drag & Drop -->
+<div class="sz-card">
+    <h2 class="sz-h2">Drag & Drop y más</h2>
+    <div class="demo-box">
+        <div class="sz-drop-zone" id="drop-zone-demo" ondragover="event.preventDefault();this.classList.add('sz-drag-over')" ondragleave="this.classList.remove('sz-drag-over')" ondrop="this.classList.remove('sz-drag-over')">
+            <div class="sz-empty">
+                <div class="sz-empty-icon">📂</div>
+                <div class="sz-empty-title">Arrastra archivos aquí</div>
+                <div class="sz-empty-desc">O haz clic para seleccionar</div>
+            </div>
+        </div>
+        <div class="sz-row">
+            <div class="sz-chip">Chip básico</div>
+            <div class="sz-chip sz-chip-primary">Primary <span class="sz-chip-close" onclick="this.parentElement.remove()">✕</span></div>
+            <div class="sz-chip">Spork <span class="sz-chip-close" onclick="this.parentElement.remove()">✕</span></div>
+        </div>
+        <div class="sz-breadcrumb">
+            <span class="sz-breadcrumb-item">🏠 Inicio</span>
+            <span class="sz-breadcrumb-sep">›</span>
+            <span class="sz-breadcrumb-item">Proyectos</span>
+            <span class="sz-breadcrumb-sep">›</span>
+            <span class="sz-breadcrumb-item sz-active">mi-app.spk</span>
+        </div>
+        <div class="sz-row">
+            <span>Atajos:</span>
+            <kbd>Ctrl</kbd><span>+</span><kbd>S</kbd>
+            <span style="margin-left:8px"></span>
+            <kbd>Ctrl</kbd><span>+</span><kbd>Shift</kbd><span>+</span><kbd>P</kbd>
+        </div>
+    </div>
+
+    <div class="code-snippet"><span class="cmt">// Drop zone</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-drop-zone"</span>
+     <span class="attr">ondragover</span>=<span class="str">"event.preventDefault();this.classList.add('sz-drag-over')"</span>
+     <span class="attr">ondragleave</span>=<span class="str">"this.classList.remove('sz-drag-over')"</span>
+     <span class="attr">ondrop</span>=<span class="str">"this.classList.remove('sz-drag-over')"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Empty state</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-icon"</span><span class="tag">&gt;</span>📭<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-title"</span><span class="tag">&gt;</span>Sin resultados<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-desc"</span><span class="tag">&gt;</span>Prueba con otra búsqueda<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Chips con cierre</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-chip sz-chip-primary"</span><span class="tag">&gt;</span>
+    Etiqueta <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-chip-close"</span> <span class="attr">onclick</span>=<span class="str">"this.parentElement.remove()"</span><span class="tag">&gt;</span>✕<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Breadcrumb</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-item"</span><span class="tag">&gt;</span>Inicio<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-sep"</span><span class="tag">&gt;</span>›<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-item sz-active"</span><span class="tag">&gt;</span>Actual<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
+
+<span class="cmt">// Atajos de teclado</span>
+<span class="tag">&lt;kbd&gt;</span>Ctrl<span class="tag">&lt;/kbd&gt;</span> + <span class="tag">&lt;kbd&gt;</span>S<span class="tag">&lt;/kbd&gt;</span></div>
+</div>
+
+<!-- ── Footer ─────────────────────────────────────────────────────────── -->
+<div class="sz-footer sz-center">
+    <p class="sz-caption">Spork UI v3.0 — Vanilla JS · Sin dependencias · Mobile-first · App-ready</p>
+</div>
+</div><!-- #app -->
+
+<script src="spork.js"></script>
+
+<script>
+const app = state({
+    contador: 5,
+    nombre: "Ingeniero Spork",
+    mostrar: true,
+    activo: true,
+    progreso: 45,
+    numero: 42,
+    opcion: "a",
+    modalOpen: false,
+    modalResult: "",
+    switchA: false,
+    volumen: 60,
+    temaOscuro: true,
+        modulos: [
+        { nombre: "spork-core.js", estado: "Activo" },
+        { nombre: "spork.css",     estado: "Optimizado" },
+        { nombre: "tinyspork.cpp", estado: "Embebido" }
+    ]
+});
+
+// Toast helper
+function showToast(tipo) {
+    const msgs = { info: "ℹ️ Notificación informativa", success: "✅ Operación completada con éxito", error: "❌ Ha ocurrido un error inesperado", warning: "⚠️ Atención: revisa esta acción" };
+    const c = document.getElementById('toast-container');
+    const t = document.createElement('div');
+    t.className = 'sz-toast' + (tipo !== 'info' ? ' sz-toast-' + tipo : '');
+    t.textContent = msgs[tipo] || tipo;
+    c.appendChild(t);
+    setTimeout(() => { t.style.opacity='0'; t.style.transition='opacity .2s'; setTimeout(()=>t.remove(),200); }, 3000);
+}
+
+// Tabs helper
+function setTab(i, btn) {
+    document.querySelectorAll('.sz-tab-btn').forEach(b => b.classList.remove('sz-active'));
+    document.querySelectorAll('.sz-tab-panel').forEach(p => p.classList.remove('sz-active'));
+    btn.classList.add('sz-active');
+    document.getElementById('tab-' + i).classList.add('sz-active');
+}
+
+// Context menu
+function showCtx(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    const m = document.getElementById('ctx-demo');
+    const wasOpen = m.style.display === 'block';
+    m.style.display = wasOpen ? 'none' : 'block';
+    if (!wasOpen) {
+        setTimeout(function() {
+            document.addEventListener('click', function() {
+                m.style.display = 'none';
+            }, {once: true});
+        }, 0);
+    }
+}
+
+// Reiniciar animaciones
+function restartAnim(btn) {
+    document.querySelectorAll('.sz-fade-in,.sz-slide-up,.sz-slide-down').forEach(el => {
+        const cls = [...el.classList].filter(c => ['sz-fade-in','sz-slide-up','sz-slide-down'].includes(c));
+        cls.forEach(c => el.classList.remove(c));
+        requestAnimationFrame(() => cls.forEach(c => el.classList.add(c)));
+    });
+}
+</script>
+</body>
+</html>
