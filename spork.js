@@ -1,14 +1,20 @@
 /* Spork Core - Micro-runtime v3 */
 
-const __state = {};
+// __state puede ser el Proxy del emitter (ya definido en el HTML antes de este script)
+// o el objeto interno si se usa spork.js standalone
+var __stateInternal = (typeof window.__state !== 'undefined' && window.__state) ? window.__state : {};
+var __state = __stateInternal;
 let   __rowState = {};
 const __fnCache = new Map();
 
 // ── API interna ───────────────────────────────────────────────────────────────
 
 function __set(key, val) {
+  // Si el emitter ya definió window.__set, usarlo (tiene el Proxy + Spork.set)
+  // Este __set solo se usa si spork.js corre standalone sin emitter
+  if (window.__set && window.__set !== __set) { window.__set(key, val); return; }
   __state[key] = val;
-  __fnCache.clear();  // invalidar cache al cambiar claves
+  __fnCache.clear();
   if (document.readyState === 'loading') return;
   __render();
 }
@@ -25,43 +31,39 @@ function __compile(expr, extra) {
 }
 
 function __eval(expr) {
-  try { return __compile(expr)(__state, ...Object.values(__state)); }
-  catch(e) { return null; }
+  // Usar el __state del emitter si existe (es el Proxy con todos los valores actuales)
+  var _s = (window.__state) ? window.__state : __state;
+  try {
+    var keys = '__state,' + Object.keys(_s).join(',');
+    var fn = __fnCache.get('|' + expr);
+    if (!fn) {
+      try { fn = new Function('__state,' + Object.keys(_s).join(','), 'try{return(' + expr + ')}catch(e){return null}'); }
+      catch(e) { fn = function(){ return null; }; }
+      __fnCache.set('|' + expr, fn);
+    }
+    return fn(_s, ...Object.values(_s));
+  } catch(e) { return null; }
 }
 
 function __evalRow(expr) {
+  var _s = (window.__state) ? window.__state : __state;
   try {
-    var fn = __compile(expr, '__rowState');
-    return fn(__state, __rowState, ...Object.values(__state));
+    var fn = new Function('__state,__rowState,' + Object.keys(_s).join(','), 'try{return(' + expr + ')}catch(e){return null}');
+    return fn(_s, __rowState, ...Object.values(_s));
   } catch(e) { return null; }
 }
 
 // ── API pública: state() ──────────────────────────────────────────────────────
-//
-// Uso:
-//   const app = state({ contador: 0, nombre: "mundo" })
-//   app.contador++          → DOM se actualiza solo
-//   app.nombre = "Spork"   → DOM se actualiza solo
-//   console.log(app.contador) → lectura directa
-//
-// También acepta múltiples objetos:
-//   const ui   = state({ visible: true })
-//   const data = state({ items: [] })
 
 function state(initial) {
-  // Registrar todas las claves en __state
-  Object.keys(initial).forEach(function(k) {
-    __state[k] = initial[k];
-  });
+  var _s = (window.__state) ? window.__state : __state;
+  Object.keys(initial).forEach(function(k) { _s[k] = initial[k]; });
   __fnCache.clear();
-
-  // Devolver un Proxy que intercepta escrituras → __set
   return new Proxy(initial, {
-    get: function(_, key) {
-      return __state[key];
-    },
+    get: function(_, key) { return _s[key]; },
     set: function(_, key, val) {
-      __set(key, val);
+      if (window.__set) window.__set(key, val);
+      else { _s[key] = val; __fnCache.clear(); __render(); }
       return true;
     }
   });
@@ -91,7 +93,9 @@ function __initIndex() {
   document.querySelectorAll('[data-spork-bind]').forEach(function(el) {
     __idx.bind.push([el, el.dataset.sporkBind]);
     el.addEventListener('input', function() {
-      __set(el.dataset.sporkBind, el.type === 'checkbox' ? el.checked : el.value);
+      var val = el.type === 'checkbox' ? el.checked : el.value;
+      if (window.__set) window.__set(el.dataset.sporkBind, val);
+      else __set(el.dataset.sporkBind, val);
     });
   });
   document.querySelectorAll('[data-spork-for-src]').forEach(function(el) {
@@ -147,7 +151,10 @@ function __renderForBlocks() {
 // ── Render principal ──────────────────────────────────────────────────────────
 
 function __render() {
+  // Invalidar cache al renderizar (el __state puede haber cambiado sus keys)
+  __fnCache.clear();
   __renderForBlocks();
+  var _s = (window.__state) ? window.__state : __state;
   for (var _i = 0; _i < __idx.text.length; _i++) {
     var _v = __eval(__idx.text[_i][1]);
     __idx.text[_i][0].textContent = _v == null ? '' : String(_v);
@@ -181,15 +188,47 @@ function __render() {
   }
   for (var _i = 0; _i < __idx.bind.length; _i++) {
     var _key = __idx.bind[_i][1], _el = __idx.bind[_i][0];
-    if (__state[_key] == null) continue;
-    if (_el.type === 'checkbox') { _el.checked = !!__state[_key]; }
-    else if (String(_el.value) !== String(__state[_key])) { _el.value = __state[_key]; }
+    if (_s[_key] == null) continue;
+    if (_el.type === 'checkbox') { _el.checked = !!_s[_key]; }
+    else if (String(_el.value) !== String(_s[_key])) { _el.value = _s[_key]; }
   }
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 document.addEventListener('DOMContentLoaded', function() {
+  // Sincronizar con el __state del emitter si ya existe
+  if (window.__state) {
+    __state = window.__state;
+  }
   __initIndex();
   __render();
 });
+
+// ── Objeto Spork — API que espera el emitter generado ─────────────────────────
+//
+// El HTML generado hace: if(window.Spork) Spork.set(k,v)
+//                        if(window.Spork) Spork.init(obj)
+//                        window.Spork ? Spork._eval(expr) : null
+
+window.Spork = {
+  set: function(key, val) {
+    // Escribir en el __state del emitter (Proxy) y re-renderizar
+    var _s = window.__state;
+    if (_s) { _s[key] = val; }
+    else { __state[key] = val; }
+    __fnCache.clear();
+    if (document.readyState !== 'loading') __render();
+  },
+  init: function(obj) {
+    var _s = window.__state;
+    Object.keys(obj).forEach(function(k) {
+      if (_s) _s[k] = obj[k]; else __state[k] = obj[k];
+    });
+    __fnCache.clear();
+    if (document.readyState !== 'loading') __render();
+  },
+  _eval: function(expr) {
+    return __eval(expr);
+  },
+};
