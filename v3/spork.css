@@ -1,7 +1,4 @@
-/* Spork CSS v3.2 — versión OFICIAL (CSS plano)
- * Sin @layer ni anidado nativo: funciona en cualquier navegador moderno, también abriendo el HTML con file://.
- * No mezcles esta hoja con la variante "@layer/nesting": el anidado nativo no admite el sufijo "&-item" (eso es Sass)
- * y deja sin estilo la sidebar, la toolbar, el modal, etc.  by @uno_u_dos */
+/* Spork CSS v2.1 - Enhanced */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root {

@@ -1,7 +1,10 @@
-/* Spork CSS v3.2 — versión OFICIAL (CSS plano)
- * Sin @layer ni anidado nativo: funciona en cualquier navegador moderno, también abriendo el HTML con file://.
- * No mezcles esta hoja con la variante "@layer/nesting": el anidado nativo no admite el sufijo "&-item" (eso es Sass)
- * y deja sin estilo la sidebar, la toolbar, el modal, etc.  by @uno_u_dos */
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf9f5;color:#141413}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Spork Demo</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
+
+<style>
+html, body { margin: 0; }
+/* Spork CSS v2.1 - Enhanced */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 
 :root {
@@ -1026,3 +1029,996 @@ button:disabled, [aria-disabled="true"] { cursor: not-allowed; }
     scroll-behavior: auto !important;
   }
 }
+
+/* ── Demo layout extras ── */
+.demo-content { padding: 24px; max-width: 900px; display: flex; flex-direction: column; gap: 32px; }
+.demo-section { display: flex; flex-direction: column; gap: 16px; padding-bottom: 32px; border-bottom: 1px solid color-mix(in srgb, var(--sz-on-surface) 8%, transparent); }
+.demo-section:last-child { border-bottom: none; padding-bottom: 0; }
+.demo-section-head { display: flex; flex-direction: column; gap: 4px; }
+.demo-eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--sz-primary); opacity: .8; }
+.demo-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.demo-col { display: flex; flex-direction: column; gap: 10px; }
+.demo-box { background: color-mix(in srgb, var(--sz-on-surface) 4%, transparent); border-radius: 12px; padding: 16px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.counter-display { font-size: 2.5rem; font-weight: 700; font-variant-numeric: tabular-nums; color: var(--sz-primary); min-width: 3ch; text-align: center; line-height: 1; }
+.live-echo { font-size: 1.2rem; font-weight: 500; color: var(--sz-primary); min-height: 1.4em; }
+.chip-list { display: flex; flex-wrap: wrap; gap: 8px; min-height: 36px; align-items: flex-start; align-content: flex-start; }
+</style>
+
+<!-- ══ APP SHELL ══════════════════════════════════════════════════════════ -->
+<div class="sz-app-shell" id="shell">
+
+  <!-- Toolbar -->
+  <div class="sz-toolbar">
+    <button class="sz-toolbar-btn" id="menuBtn" onclick="toggleMobile()" aria-label="Menú" style="display:none">☰</button>
+    <button class="sz-toolbar-btn" id="collapseBtn" onclick="toggleSidebar()" aria-label="Colapsar sidebar" title="Colapsar sidebar">⊣</button>
+    <span class="sz-toolbar-sep"></span>
+    <span class="sz-toolbar-title">⚡ Spork v3 — Demostración</span>
+    <div class="sz-toolbar-spacer"></div>
+    <span class="sz-badge" id="countBadge" data-spork-text="count" style="min-width:28px;text-align:center;font-variant-numeric:tabular-nums" title="Contador reactivo"></span>
+    <span class="sz-toolbar-sep"></span>
+    <button class="sz-toolbar-btn sz-toolbar-btn-wide" id="themeBtn" onclick="toggleTheme()">🌙 Oscuro</button>
+  </div>
+
+  <!-- Sidebar -->
+  <nav class="sz-sidebar" id="sidebar" aria-label="Secciones">
+    <div class="sz-sidebar-section">
+      <div class="sz-sidebar-section-title">Componentes</div>
+      <a class="sz-sidebar-item sz-active" onclick="navTo(this,'tipografia')" href="#tipografia">
+        <span class="sz-sidebar-icon">Aa</span><span class="sz-sidebar-label">Tipografía</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'botones')" href="#botones">
+        <span class="sz-sidebar-icon">⬚</span><span class="sz-sidebar-label">Botones</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'formularios')" href="#formularios">
+        <span class="sz-sidebar-icon">✏</span><span class="sz-sidebar-label">Formularios</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'tarjetas')" href="#tarjetas">
+        <span class="sz-sidebar-icon">▭</span><span class="sz-sidebar-label">Tarjetas</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'indicadores')" href="#indicadores">
+        <span class="sz-sidebar-icon">◎</span><span class="sz-sidebar-label">Indicadores</span>
+        <span class="sz-sidebar-badge">4</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'alertas')" href="#alertas">
+        <span class="sz-sidebar-icon">⚠</span><span class="sz-sidebar-label">Alertas</span>
+      </a>
+      <a class="sz-sidebar-item" onclick="navTo(this,'tabla')" href="#tabla">
+        <span class="sz-sidebar-icon">⊞</span><span class="sz-sidebar-label">Tabla</span>
+      </a>
+    </div>
+    <div class="sz-sidebar-section">
+      <div class="sz-sidebar-section-title">Novedades v3.1</div>
+      <a class="sz-sidebar-item" onclick="navTo(this,'nuevos')" href="#nuevos">
+        <span class="sz-sidebar-icon">✦</span><span class="sz-sidebar-label">Spinner & Tooltip</span>
+      </a>
+    </div>
+    <div class="sz-sidebar-section">
+      <div class="sz-sidebar-section-title">Spork JS v3.2</div>
+      <a class="sz-sidebar-item" onclick="navTo(this,'reactividad')" href="#reactividad">
+        <span class="sz-sidebar-icon">⚡</span><span class="sz-sidebar-label">Reactividad</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Main -->
+  <main class="sz-main" id="mainArea">
+    <div class="demo-content">
+
+      <!-- ── Tipografía ── -->
+      <section class="demo-section" id="tipografia">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">01 — CSS</span>
+          <h2 class="sz-h2">Tipografía</h2>
+          <p class="sz-caption">Escala de texto con clamp() y Inter como fuente principal</p>
+        </div>
+        <div class="demo-col" style="gap:8px">
+          <span class="sz-h1">sz-h1 — Título principal</span>
+          <span class="sz-h2">sz-h2 — Encabezado de sección</span>
+          <span class="sz-h3">sz-h3 — Subtítulo</span>
+          <span class="sz-h4">sz-h4 — Etiqueta grande</span>
+          <span class="sz-subtitle">sz-subtitle — Destacado</span>
+          <span class="sz-p">sz-p / sz-body — Texto de párrafo estándar a 1rem con interlineado 1.6 para máxima legibilidad en bloques de texto.</span>
+          <span class="sz-label">sz-label — Etiqueta de campo</span>
+          <span class="sz-caption">sz-caption — Texto auxiliar más pequeño con opacidad reducida</span>
+          <span class="sz-mono">sz-mono — <code>código_monospace()</code></span>
+          <div class="demo-row" style="gap:6px;align-items:center">
+            <kbd>Ctrl</kbd> <span class="sz-caption">+</span> <kbd>K</kbd>
+            <span class="sz-caption sz-muted" style="margin-left:4px">sz-kbd para atajos de teclado</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Botones ── -->
+      <section class="demo-section" id="botones">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">02 — CSS</span>
+          <h2 class="sz-h2">Botones</h2>
+          <p class="sz-caption">Variantes, tamaños y estados</p>
+        </div>
+        <div class="demo-col">
+          <div class="demo-box">
+            <button class="sz-btn sz-btn-filled">Filled</button>
+            <button class="sz-btn sz-btn-outlined">Outlined</button>
+            <button class="sz-btn sz-btn-text">Text</button>
+            <button class="sz-btn sz-btn-danger">Danger</button>
+            <button class="sz-btn sz-btn-filled" disabled>Deshabilitado</button>
+          </div>
+          <div class="demo-box">
+            <button class="sz-btn sz-btn-filled sz-btn-sm">Small</button>
+            <button class="sz-btn sz-btn-filled">Normal</button>
+            <button class="sz-btn sz-btn-filled sz-btn-lg">Large</button>
+          </div>
+          <div class="demo-box">
+            <button class="sz-btn sz-btn-filled sz-loading">Cargando</button>
+            <button class="sz-btn sz-btn-outlined sz-btn-icon" aria-label="Ícono">★</button>
+            <button class="sz-btn sz-btn-filled sz-btn-icon" aria-label="Añadir">+</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Formularios ── -->
+      <section class="demo-section" id="formularios">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">03 — CSS</span>
+          <h2 class="sz-h2">Formularios</h2>
+          <p class="sz-caption">Inputs, select y textarea con estados de validación</p>
+        </div>
+        <div class="sz-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+          <div class="sz-field">
+            <label class="sz-label" for="demo-name">Nombre</label>
+            <input class="sz-input" id="demo-name" type="text" placeholder="Ej. María García">
+            <span class="sz-field-hint">Este campo es opcional</span>
+          </div>
+          <div class="sz-field">
+            <label class="sz-label" for="demo-email">Email</label>
+            <input class="sz-input sz-input-error" id="demo-email" type="email" value="mal@" placeholder="correo@ejemplo.com">
+            <span class="sz-field-error">⚠ Dirección de email no válida</span>
+          </div>
+          <div class="sz-field">
+            <label class="sz-label" for="demo-role">Rol</label>
+            <select class="sz-select" id="demo-role">
+              <option>Diseñador</option>
+              <option>Desarrollador</option>
+              <option>Product Manager</option>
+            </select>
+          </div>
+          <div class="sz-field" style="grid-column:1/-1">
+            <label class="sz-label" for="demo-bio">Biografía</label>
+            <textarea class="sz-textarea" id="demo-bio" placeholder="Escribe algo sobre ti…"></textarea>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Tarjetas ── -->
+      <section class="demo-section" id="tarjetas">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">04 — CSS</span>
+          <h2 class="sz-h2">Tarjetas</h2>
+          <p class="sz-caption">Default, flat e interactiva</p>
+        </div>
+        <div class="sz-grid">
+          <div class="sz-card">
+            <span class="sz-badge">Default</span>
+            <p class="sz-h4">sz-card</p>
+            <p class="sz-caption">Elevación estándar con sombra y borde primario translúcido.</p>
+            <div class="sz-divider"></div>
+            <div class="sz-row sz-row-end">
+              <button class="sz-btn sz-btn-text sz-btn-sm">Saber más →</button>
+            </div>
+          </div>
+          <div class="sz-card sz-card-flat">
+            <span class="sz-badge sz-badge-success">Flat</span>
+            <p class="sz-h4">sz-card-flat</p>
+            <p class="sz-caption">Sin sombra. Borde neutral de menor énfasis.</p>
+            <div class="sz-divider"></div>
+            <div class="sz-row sz-row-end">
+              <button class="sz-btn sz-btn-outlined sz-btn-sm">Ver</button>
+            </div>
+          </div>
+          <div class="sz-card sz-card-interactive" onclick="Spork.set('modalOpen',true)" role="button" tabindex="0">
+            <span class="sz-badge sz-badge-warning">Interactiva</span>
+            <p class="sz-h4">sz-card-interactive</p>
+            <p class="sz-caption">Hover eleva la tarjeta. Click abre el modal de ejemplo.</p>
+            <div class="sz-divider"></div>
+            <div class="sz-row sz-row-end">
+              <button class="sz-btn sz-btn-filled sz-btn-sm">Abrir modal ↗</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Indicadores ── -->
+      <section class="demo-section" id="indicadores">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">05 — CSS</span>
+          <h2 class="sz-h2">Badges y Chips</h2>
+        </div>
+        <div class="demo-col">
+          <div class="demo-box">
+            <span class="sz-badge">Primary</span>
+            <span class="sz-badge sz-badge-success">Success</span>
+            <span class="sz-badge sz-badge-warning">Warning</span>
+            <span class="sz-badge sz-badge-error">Error</span>
+          </div>
+          <div class="demo-box">
+            <span class="sz-chip">Neutral</span>
+            <span class="sz-chip sz-chip-primary">Primary</span>
+            <span class="sz-chip">Vue <span class="sz-chip-close">✕</span></span>
+            <span class="sz-chip sz-chip-primary">React <span class="sz-chip-close">✕</span></span>
+          </div>
+          <div class="sz-progress">
+            <div class="sz-progress-bar" id="progressBar" style="width:65%"></div>
+          </div>
+          <p class="sz-caption sz-center">Barra de progreso · <span data-spork-text="progress + '%'">65%</span></p>
+        </div>
+      </section>
+
+      <!-- ── Alertas ── -->
+      <section class="demo-section" id="alertas">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">06 — CSS</span>
+          <h2 class="sz-h2">Alertas</h2>
+        </div>
+        <div class="demo-col">
+          <div class="sz-alert">ℹ️ Información general con color primario y borde lateral.</div>
+          <div class="sz-alert sz-alert-success">✅ Acción completada con éxito. Los cambios se han guardado.</div>
+          <div class="sz-alert sz-alert-warning">⚠️ Atención: esta operación puede tardar varios minutos.</div>
+          <div class="sz-alert sz-alert-error">❌ Error de conexión. Comprueba tu red e inténtalo de nuevo.</div>
+        </div>
+      </section>
+
+      <!-- ── Tabla ── -->
+      <section class="demo-section" id="tabla">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">07 — CSS</span>
+          <h2 class="sz-h2">Tabla</h2>
+        </div>
+        <div class="sz-table-container">
+          <table class="sz-table sz-table-striped">
+            <thead>
+              <tr>
+                <th>Componente</th>
+                <th>Clase</th>
+                <th>Estado</th>
+                <th>Versión</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Botón</td><td class="sz-mono">.sz-btn</td><td><span class="sz-badge sz-badge-success">Estable</span></td><td>3.0</td></tr>
+              <tr><td>Tarjeta</td><td class="sz-mono">.sz-card</td><td><span class="sz-badge sz-badge-success">Estable</span></td><td>3.0</td></tr>
+              <tr><td>Spinner</td><td class="sz-mono">.sz-spinner</td><td><span class="sz-badge sz-badge-warning">Nuevo</span></td><td>3.1</td></tr>
+              <tr><td>Tooltip</td><td class="sz-mono">.sz-tooltip</td><td><span class="sz-badge sz-badge-warning">Nuevo</span></td><td>3.1</td></tr>
+              <tr><td>App Shell</td><td class="sz-mono">.sz-app-shell</td><td><span class="sz-badge sz-badge-success">Estable</span></td><td>3.0</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ── Nuevos ── -->
+      <section class="demo-section" id="nuevos">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">08 — Novedades CSS v3.1</span>
+          <h2 class="sz-h2">Spinner &amp; Tooltip</h2>
+        </div>
+        <div class="demo-col">
+          <div class="demo-box" style="gap:20px">
+            <div class="demo-col" style="align-items:center;gap:8px">
+              <div class="sz-spinner sz-spinner-sm"></div>
+              <span class="sz-caption">sm</span>
+            </div>
+            <div class="demo-col" style="align-items:center;gap:8px">
+              <div class="sz-spinner"></div>
+              <span class="sz-caption">default</span>
+            </div>
+            <div class="demo-col" style="align-items:center;gap:8px">
+              <div class="sz-spinner sz-spinner-lg"></div>
+              <span class="sz-caption">lg</span>
+            </div>
+            <div class="sz-divider" style="width:1px;height:60px;margin:0"></div>
+            <div class="demo-col" style="align-items:center;gap:8px">
+              <div class="sz-tooltip-wrap">
+                <button class="sz-btn sz-btn-filled sz-btn-sm">Hover aquí</button>
+                <div class="sz-tooltip">Nuevo: sz-tooltip</div>
+              </div>
+              <span class="sz-caption">tooltip top</span>
+            </div>
+            <div class="demo-col" style="align-items:center;gap:8px">
+              <div class="sz-tooltip-wrap">
+                <button class="sz-btn sz-btn-outlined sz-btn-sm">Hover aquí</button>
+                <div class="sz-tooltip sz-tooltip-bottom">sz-tooltip-bottom</div>
+              </div>
+              <span class="sz-caption">tooltip bottom</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── Reactividad ── -->
+      <section class="demo-section" id="reactividad">
+        <div class="demo-section-head">
+          <span class="demo-eyebrow">09 — Spork JS v3.2</span>
+          <h2 class="sz-h2">Reactividad</h2>
+          <p class="sz-caption">Estado reactivo, bindings bidireccionales y listas con claves</p>
+        </div>
+
+        <div class="sz-grid" style="grid-template-columns:repeat(auto-fit,minmax(240px,1fr))">
+
+          <!-- Counter -->
+          <div class="sz-card sz-card-flat">
+            <span class="sz-label">Contador · <span class="sz-mono sz-caption">data-spork-text</span></span>
+            <div class="sz-row sz-row-center" style="gap:16px">
+              <button class="sz-btn sz-btn-outlined sz-btn-icon" onclick="Spork.set('count',Math.max(0,__state.count-1))" aria-label="Decrementar">−</button>
+              <div class="counter-display" data-spork-text="count">0</div>
+              <button class="sz-btn sz-btn-filled sz-btn-icon" onclick="Spork.set('count',__state.count+1)" aria-label="Incrementar">+</button>
+            </div>
+            <div class="sz-progress">
+              <div class="sz-progress-bar" data-spork-style='{"width": Math.min(count,20)*5 + "%"}'></div>
+            </div>
+            <p class="sz-caption sz-center sz-muted">Máximo visual: 20 — el badge del toolbar también refleja el valor</p>
+          </div>
+
+          <!-- Live binding -->
+          <div class="sz-card sz-card-flat">
+            <span class="sz-label">Binding en vivo · <span class="sz-mono sz-caption">data-spork-bind</span></span>
+            <input class="sz-input" type="text" data-spork-bind="greeting" placeholder="Escribe algo…">
+            <div class="live-echo" data-spork-text="'¡Hola, ' + greeting + '!'"  style="padding:8px 12px;border-radius:10px;background:color-mix(in srgb,var(--sz-primary) 8%,transparent)">¡Hola, Spork!</div>
+            <p class="sz-caption sz-muted">Cada tecla actualiza el estado sin eventos manuales</p>
+          </div>
+
+          <!-- Conditional -->
+          <div class="sz-card sz-card-flat">
+            <span class="sz-label">Condicional · <span class="sz-mono sz-caption">data-spork-if</span></span>
+            <button class="sz-btn sz-btn-outlined sz-btn-full" onclick="Spork.set('showSecret',!__state.showSecret)" data-spork-text="showSecret ? 'Ocultar contenido' : 'Mostrar contenido'">Mostrar contenido</button>
+            <div data-spork-if="showSecret" class="sz-alert sz-alert-success sz-fade-in">
+              ✨ ¡Aparece y desaparece con <span class="sz-mono">data-spork-if</span>!
+            </div>
+            <div data-spork-if="!showSecret" class="sz-caption sz-muted sz-center" style="padding:12px">
+              El contenido está oculto
+            </div>
+          </div>
+
+          <!-- Progress slider -->
+          <div class="sz-card sz-card-flat">
+            <span class="sz-label">Slider · <span class="sz-mono sz-caption">data-spork-bind</span> + <span class="sz-mono">data-spork-style</span></span>
+            <input type="range" min="0" max="100" data-spork-bind="progress" style="width:100%;accent-color:var(--sz-primary)">
+            <div class="sz-progress">
+              <div class="sz-progress-bar" data-spork-style='{"width": progress + "%"}'></div>
+            </div>
+            <p class="sz-caption sz-center" data-spork-text="progress + '% completado'">65% completado</p>
+          </div>
+
+        </div>
+
+        <!-- Lista reactiva -->
+        <div class="sz-card">
+          <span class="sz-label">Lista reactiva · <span class="sz-mono sz-caption">data-spork-for</span> con claves</span>
+          <div class="sz-row" style="gap:8px">
+            <input class="sz-input sz-grow" type="text" data-spork-bind="newItem" placeholder="Nueva etiqueta…" onkeydown="if(event.key==='Enter')addItem()">
+            <button class="sz-btn sz-btn-filled" onclick="addItem()" style="white-space:nowrap;flex-shrink:0">+ Añadir</button>
+          </div>
+          <div class="chip-list" id="tagList" data-spork-for-src="items" data-spork-for-var="item" data-spork-for-key="item.id">
+            <!-- Populated by Spork -->
+          </div>
+          <p class="sz-caption sz-muted">Las chips se reconcilian con clave (<span class="sz-mono">data-spork-for-key</span>) — sin perder el estado DOM</p>
+        </div>
+
+        <!-- Template para la lista -->
+        <template data-spork-for-template="tagList">
+          <span class="sz-chip sz-chip-primary">
+            <span data-spork-text="item.name"></span>
+            <span class="sz-chip-close" onclick="removeItem(+this.closest('[data-spork-key]').dataset.sporkKey)">✕</span>
+          </span>
+        </template>
+
+      </section>
+
+    </div><!-- /demo-content -->
+  </main>
+
+  <!-- Status bar -->
+  <div class="sz-statusbar">
+    <span class="sz-statusbar-item">Spork CSS v3.1 · JS v3.2</span>
+    <span class="sz-statusbar-sep"></span>
+    <span class="sz-statusbar-item" data-spork-text="'Tema: ' + (theme === 'dark' ? '🌙 Oscuro' : '☀️ Claro')">Tema: ☀️ Claro</span>
+    <div style="flex:1"></div>
+    <span class="sz-statusbar-item">by @uno_u_dos</span>
+  </div>
+
+</div><!-- /sz-app-shell -->
+
+<!-- Modal (position:fixed sobre todo) -->
+<div class="sz-modal-overlay" style="display:none" data-spork-if="modalOpen" onclick="if(event.target===this)Spork.set('modalOpen',false)">
+  <div class="sz-modal">
+    <div class="sz-modal-header">
+      <span class="sz-modal-title">Modal de Spork</span>
+      <button class="sz-modal-close" onclick="Spork.set('modalOpen',false)" aria-label="Cerrar">✕</button>
+    </div>
+    <div class="sz-modal-body">
+      <p>Este modal se controla con <span class="sz-mono">data-spork-if="modalOpen"</span>. El overlay tiene <span class="sz-mono">backdrop-filter: blur</span> y cierra al hacer click fuera.</p>
+      <br>
+      <p>Puedes cambiar el tema con el botón del toolbar y ver cómo todos los tokens se adaptan instantáneamente.</p>
+    </div>
+    <div class="sz-modal-footer">
+      <button class="sz-btn sz-btn-outlined" onclick="Spork.set('modalOpen',false)">Cancelar</button>
+      <button class="sz-btn sz-btn-filled" onclick="Spork.set('modalOpen',false)">Entendido</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SPORK JS v3.2 ══════════════════════════════════════════════════════ -->
+<script>
+/* Spork Core v3.2 - reactive micro-runtime by @uno_u_dos
+ *
+ * Directives:
+ *   data-spork-text="expr"          → textContent reactivo
+ *   data-spork-html="expr"          → innerHTML reactivo (asegúrate de sanitizar)
+ *   data-spork-if="expr"            → muestra/oculta el elemento
+ *   data-spork-style="{ prop: expr}"→ estilos inline reactivos
+ *   data-spork-class='{"cls":expr}' → clases condicionales
+ *   data-spork-attrs='{"attr":expr}' → atributos condicionales
+ *   data-spork-bind="key"           → two-way binding (input/select/checkbox)
+ *   data-spork-on="click:expr"      → eventos genéricos (cualquier nombre de evento)
+ *   data-spork-ref="name"           → expone el elemento en state.$refs.name
+ *   data-spork-for-src="expr"       → lista reactiva (necesita <template data-spork-for-template="id">)
+ *   data-spork-for-var="varName"    → nombre de la variable de iteración (default: "item")
+ *   data-spork-for-key="expr"       → expresión de clave para reconciliación DOM (recomendado)
+ *
+ * CSP: este runtime usa new Function() → requiere 'unsafe-eval' en script-src.
+ */
+(function (global) {
+  "use strict";
+
+  var stateStore = global.__state || {};
+  var rowState = {};
+  var cache = new Map();
+  var watchers = new Map();
+  var index = { text: [], html: [], if_: [], style: [], attrs: [], class_: [], bind: [], for_: [], refs: [] };
+  var renderQueued = false;
+  var batchDepth = 0;
+  var dirty = false;
+  var debug = !!global.SPORK_DEBUG;
+  var delegationSetUp = false;
+  var destroyCallbacks = [];
+
+  /* ── Utilidades internas ─────────────────────────────────────────────── */
+
+  function getState() { return global.__state || stateStore; }
+
+  function warn(error, expression) {
+    if (debug && global.console) console.warn("[Spork]", expression, error);
+  }
+
+  function compile(expression, extra, row, stmt) {
+    var state = getState();
+    var names = Object.keys(state);
+    /* FIX: incluir nombres de variables de fila en la clave y args para que "item.name" funcione */
+    var rowNames = row ? Object.keys(rowState) : [];
+    var key = (row ? "row|" + rowNames.join(",") + "|" : "") + (stmt ? "S|" : "") + (extra || "") + "|" + names.join(",") + "|" + expression;
+    if (cache.has(key)) return cache.get(key);
+    var args = "__state," + (row ? "__rowState," + rowNames.join(",") + "," : "") + (extra ? extra + "," : "") + names.join(",");
+    var fn;
+    /* with(__state): permite asignaciones (contador++, a=1) que escriben en el estado real */
+    var body = stmt ? "with(__state){" + expression + "}" : "with(__state){return (" + expression + ");}";
+    try { fn = new Function(args, body); }
+    catch (error) { warn(error, expression); fn = function () { return null; }; }
+    cache.set(key, fn);
+    return fn;
+  }
+
+  function evaluate(expression, extraValues, row, stmt) {
+    var state = getState();
+    var names = Object.keys(state);
+    var values = names.map(function (key) { return state[key]; });
+    /* FIX: pasar valores de fila como argumentos nombrados para que las expresiones de plantilla funcionen */
+    var rowNames = row ? Object.keys(rowState) : [];
+    var rowValues = row ? rowNames.map(function (k) { return rowState[k]; }) : [];
+    try {
+      if (stmt) { dirty = true; requestRender(); }   /* las instrucciones pueden mutar el estado directamente */
+      return compile(expression, extraValues ? Object.keys(extraValues).join(",") : "", row, stmt)(
+        state,
+        ...(row ? [rowState, ...rowValues] : []),
+        ...(extraValues ? Object.keys(extraValues).map(function (key) { return extraValues[key]; }) : []),
+        ...values
+      );
+    } catch (error) { warn(error, expression); return null; }
+  }
+
+  /* Mapas { clave: expr } para class/attrs. Acepta JSON ('{"a":"expr"}') o literal JS ('{"a": expr}') */
+  function resolveMap(src, row) {
+    try {
+      var m = JSON.parse(src), out = {};
+      Object.keys(m).forEach(function (k) { out[k] = typeof m[k] === "string" ? evaluate(m[k], null, row) : m[k]; });
+      return out;
+    } catch (_) {
+      var v = evaluate("(" + src + ")", null, row);
+      return v && typeof v === "object" ? v : {};
+    }
+  }
+
+  /* Ejecuta fn con el contexto de fila (variable de iteración) del nodo dado */
+  function withRow(node, fn) {
+    var rowEl = node && node.closest ? node.closest("[data-spork-row-managed]") : null;
+    if (!rowEl || !rowEl.__sporkRow) return fn(false);
+    var prev = rowState; rowState = rowEl.__sporkRow;
+    try { return fn(true); } finally { rowState = prev; }
+  }
+
+  /* ── Estado ──────────────────────────────────────────────────────────── */
+
+  function set(key, value) {
+    var state = getState();
+    var previous = state[key];
+    if (Object.is(previous, value)) return value;
+    /* FIX: solo limpiar caché si la clave es nueva (cambia la firma de argumentos compilados) */
+    var isNew = !(key in state);
+    state[key] = value;
+    dirty = true;
+    if (isNew) cache.clear();
+    var list = watchers.get(key) || [];
+    list.slice().forEach(function (fn) { fn(value, previous); });
+    requestRender();
+    return value;
+  }
+
+  function requestRender() {
+    if (batchDepth) { renderQueued = true; return; }
+    if (renderQueued) return;
+    renderQueued = true;
+    queueMicrotask(function () { renderQueued = false; if (dirty) { dirty = false; render(); } });
+  }
+
+  /* ── Control de formularios ──────────────────────────────────────────── */
+
+  function controlValue(el) {
+    if (el.type === "checkbox") return el.checked;
+    if (el.type === "radio") return el.checked ? el.value : undefined;
+    if (el.multiple) return Array.from(el.selectedOptions).map(function (o) { return o.value; });
+    if (el.type === "number" || el.type === "range") return el.value === "" ? null : Number(el.value);
+    return el.value;
+  }
+
+  /* ── Event delegation (captura elementos dinámicos también) ──────────── */
+
+  function setupDelegation() {
+    if (delegationSetUp) return;
+    delegationSetUp = true;
+
+    /* FIX: data-spork-bind via delegación → funciona con elementos añadidos dinámicamente */
+    function onInput(e) {
+      var el = e.target.closest("[data-spork-bind]");
+      if (!el) return;
+      var value = controlValue(el);
+      if (value === undefined) return;
+      var key = el.dataset.sporkBind;
+      if (el.closest("[data-spork-row-managed]")) {
+        /* bind dentro de una fila: asigna sobre el elemento de la fila (task.completed = valor) */
+        withRow(el, function (isRow) { evaluate(key + " = __v", { __v: value }, isRow, true); });
+        dirty = true; requestRender();
+      } else set(key, value);
+    }
+    document.addEventListener("input", onInput);
+    document.addEventListener("change", onInput);
+    destroyCallbacks.push(function () {
+      document.removeEventListener("input", onInput);
+      document.removeEventListener("change", onInput);
+    });
+
+    /* FIX: data-spork-on="eventName:expr" — eventos genéricos via delegación */
+    var boundEvents = new Set();
+    function ensureEvent(eventName) {
+      if (boundEvents.has(eventName)) return;
+      boundEvents.add(eventName);
+      var handler = function (e) {
+        /* Busca el elemento más cercano que tenga data-spork-on con este evento */
+        var el = e.target;
+        while (el && el !== document) {
+          var spec = el.dataset.sporkOn;
+          if (spec) {
+            spec.split(";").forEach(function (pair) {
+              var idx = pair.indexOf(":");
+              if (idx === -1) return;
+              var evName = pair.slice(0, idx).trim();
+              var expr   = pair.slice(idx + 1).trim();
+              if (evName === eventName) withRow(el, function (isRow) { evaluate(expr, { "$event": e, "$element": el }, isRow, true); });
+            });
+          }
+          /* Compatibilidad con el atributo singular data-spork-on-click original */
+          if (eventName === "click" && el.dataset.sporkOnClick) {
+            withRow(el, function (isRow) { evaluate(el.dataset.sporkOnClick, { "$event": e, "$element": el }, isRow, true); });
+          }
+          el = el.parentElement;
+        }
+      };
+      document.addEventListener(eventName, handler);
+      destroyCallbacks.push(function () { document.removeEventListener(eventName, handler); });
+    }
+
+    /* Registra los eventos presentes en el DOM inicial */
+    function indexEvents() {
+      document.querySelectorAll("[data-spork-on]").forEach(function (el) {
+        (el.dataset.sporkOn || "").split(";").forEach(function (pair) {
+          var evName = pair.split(":")[0].trim();
+          if (evName) ensureEvent(evName);
+        });
+      });
+      /* Siempre registrar click para data-spork-on-click (retrocompatibilidad) */
+      if (document.querySelector("[data-spork-on-click]")) ensureEvent("click");
+    }
+
+    indexEvents();
+    /* Re-indexar tras renders de listas */
+    destroyCallbacks._indexEvents = indexEvents;
+  }
+
+  /* ── Construcción de índice ──────────────────────────────────────────── */
+
+  function buildIndex() {
+    index = { text: [], html: [], if_: [], style: [], attrs: [], class_: [], bind: [], for_: [], refs: [] };
+
+    document.querySelectorAll("[data-spork-text]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.text.push([el, el.dataset.sporkText]);
+    });
+    /* FIX: nuevo directivo data-spork-html */
+    document.querySelectorAll("[data-spork-html]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.html.push([el, el.dataset.sporkHtml]);
+    });
+    document.querySelectorAll("[data-spork-if]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.if_.push([el, el.dataset.sporkIf]);
+    });
+    document.querySelectorAll("[data-spork-style]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.style.push([el, el.dataset.sporkStyle]);
+    });
+    document.querySelectorAll("[data-spork-attrs]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.attrs.push([el, el.dataset.sporkAttrs]);
+    });
+    document.querySelectorAll("[data-spork-class]").forEach(function (el) {
+      if (!el.closest("[data-spork-row-managed]")) index.class_.push([el, el.dataset.sporkClass]);
+    });
+    document.querySelectorAll("[data-spork-for-src]").forEach(function (el) {
+      index.for_.push([el, el.id]);
+    });
+    /* FIX: data-spork-ref → expone elementos en state.$refs */
+    var refs = {};
+    document.querySelectorAll("[data-spork-ref]").forEach(function (el) {
+      refs[el.dataset.sporkRef] = el;
+      index.refs.push([el, el.dataset.sporkRef]);
+    });
+    getState().$refs = refs;
+
+    setupDelegation();
+    /* Re-detectar posibles nuevos eventos tras rebuild */
+    if (destroyCallbacks._indexEvents) destroyCallbacks._indexEvents();
+  }
+
+  /* ── Renderizado de filas (data-spork-for) ───────────────────────────── */
+
+  function applyRow(root) {
+    root.querySelectorAll("[data-spork-text]").forEach(function (el) {
+      var value = evaluate(el.dataset.sporkText, null, true);
+      el.textContent = value == null ? "" : String(value);
+    });
+    /* data-spork-html en filas */
+    root.querySelectorAll("[data-spork-html]").forEach(function (el) {
+      var value = evaluate(el.dataset.sporkHtml, null, true);
+      el.innerHTML = value == null ? "" : String(value);
+    });
+    root.querySelectorAll("[data-spork-if]").forEach(function (el) {
+      el.style.display = evaluate(el.dataset.sporkIf, null, true) ? "" : "none";
+    });
+    root.querySelectorAll("[data-spork-class]").forEach(function (el) {
+      var map = resolveMap(el.dataset.sporkClass, true);
+      Object.keys(map).forEach(function (cls) { el.classList.toggle(cls, !!map[cls]); });
+    });
+    root.querySelectorAll("[data-spork-attrs]").forEach(function (el) {
+      var map = resolveMap(el.dataset.sporkAttrs, true);
+      Object.keys(map).forEach(function (attr) {
+        var v = map[attr];
+        if (v == null || v === false) el.removeAttribute(attr); else el.setAttribute(attr, v === true ? "" : String(v));
+      });
+    });
+    root.querySelectorAll("[data-spork-style]").forEach(function (el) {
+      var o = evaluate("(" + el.dataset.sporkStyle + ")", null, true);
+      if (o && typeof o === "object") Object.keys(o).forEach(function (k) { el.style[k] = o[k] == null ? "" : String(o[k]); });
+    });
+    /* bind en filas: sincroniza estado -> control (la escritura va por delegación) */
+    root.querySelectorAll("[data-spork-bind]").forEach(function (el) {
+      var v = evaluate(el.dataset.sporkBind, null, true);
+      if (v == null) return;
+      if (el.type === "checkbox") el.checked = !!v;
+      else if (String(el.value) !== String(v)) el.value = v;
+    });
+  }
+
+  function renderLists() {
+    index.for_.forEach(function (entry) {
+      var container = entry[0];
+      var id = entry[1];
+      var template = document.querySelector('template[data-spork-for-template="' + id + '"]');
+      if (!template) return;
+
+      var values = evaluate(container.dataset.sporkForSrc);
+      if (!Array.isArray(values)) values = [];
+      var variable = container.dataset.sporkForVar || "item";
+      var keyExpr  = container.dataset.sporkForKey;   /* FIX: soporte para claves */
+
+      if (keyExpr) {
+        /* ── Reconciliación con clave: reutiliza nodos existentes ── */
+        var existingByKey = new Map();
+        Array.from(container.children).forEach(function (child) {
+          var k = child.dataset.sporkKey;
+          if (k != null) existingByKey.set(k, child);
+        });
+
+        var fragment = document.createDocumentFragment();
+        values.forEach(function (item) {
+          var previous = rowState;
+          rowState = {};
+          rowState[variable] = item;
+          var key = String(evaluate(keyExpr, null, true));
+          rowState = previous;
+
+          var node = existingByKey.get(key);
+          if (node) {
+            /* Reutilizar y actualizar el nodo existente */
+            existingByKey.delete(key);
+            rowState = {};
+            rowState[variable] = item;
+            node.__sporkRow = rowState;
+            applyRow(node);
+            rowState = previous;
+            fragment.appendChild(node);
+          } else {
+            /* Crear nodo nuevo */
+            var clone = template.content.cloneNode(true);
+            rowState = {};
+            rowState[variable] = item;
+            Array.from(clone.children).forEach(function (child) {
+              child.dataset.sporkRowManaged = "";
+              child.dataset.sporkKey = key;
+              child.__sporkRow = rowState;
+              applyRow(child);
+              fragment.appendChild(child);
+            });
+            rowState = previous;
+          }
+        });
+
+        /* Eliminar nodos que ya no están en el array */
+        existingByKey.forEach(function (node) { node.remove(); });
+        container.appendChild(fragment);
+
+      } else {
+        /* ── Sin clave: comportamiento original ── */
+        var fragment = document.createDocumentFragment();
+        values.forEach(function (item) {
+          var clone = template.content.cloneNode(true);
+          var previous = rowState;
+          rowState = {};
+          rowState[variable] = item;
+          Array.from(clone.children).forEach(function (child) {
+            child.dataset.sporkRowManaged = "";
+            child.__sporkRow = rowState;
+            applyRow(child);
+            fragment.appendChild(child);
+          });
+          rowState = previous;
+        });
+        container.replaceChildren(fragment);
+      }
+    });
+  }
+
+  /* ── Render principal ────────────────────────────────────────────────── */
+
+  function render() {
+    /* FIX: try/catch global para que un error no congele el runtime */
+    try {
+      renderLists();
+      index.text.forEach(function (entry) {
+        var value = evaluate(entry[1]);
+        entry[0].textContent = value == null ? "" : String(value);
+      });
+      /* FIX: data-spork-html */
+      index.html.forEach(function (entry) {
+        var value = evaluate(entry[1]);
+        entry[0].innerHTML = value == null ? "" : String(value);
+      });
+      index.if_.forEach(function (entry) {
+        entry[0].style.display = evaluate(entry[1]) ? "" : "none";
+      });
+      index.style.forEach(function (entry) {
+        var object = evaluate("(" + entry[1] + ")");
+        if (object && typeof object === "object") {
+          Object.keys(object).forEach(function (key) {
+            entry[0].style[key] = object[key] == null ? "" : String(object[key]);
+          });
+        }
+      });
+      index.attrs.forEach(function (entry) {
+        var map = resolveMap(entry[1], false);
+        Object.keys(map).forEach(function (attr) {
+          var value = map[attr];
+          if (value == null || value === false) entry[0].removeAttribute(attr);
+          else entry[0].setAttribute(attr, value === true ? "" : String(value));
+        });
+      });
+      index.class_.forEach(function (entry) {
+        var map = resolveMap(entry[1], false);
+        Object.keys(map).forEach(function (cls) { entry[0].classList.toggle(cls, !!map[cls]); });
+      });
+      /* Sincronizar inputs con estado */
+      document.querySelectorAll("[data-spork-bind]").forEach(function (el) {
+        if (el.closest("[data-spork-row-managed]")) return;
+        var value = getState()[el.dataset.sporkBind];
+        if (value == null) return;
+        if (el.type === "checkbox") { el.checked = !!value; }
+        else if (el.multiple && Array.isArray(value)) {
+          Array.from(el.options).forEach(function (o) { o.selected = value.includes(o.value); });
+        } else if (String(el.value) !== String(value)) { el.value = value; }
+      });
+    } catch (error) {
+      if (debug && global.console) console.error("[Spork] Error en render:", error);
+    }
+  }
+
+  /* ── API pública ─────────────────────────────────────────────────────── */
+
+  function batch(fn) {
+    batchDepth++;
+    try { fn(); }
+    finally { batchDepth--; if (!batchDepth && renderQueued) requestRender(); }
+  }
+
+  function watch(key, fn) {
+    var list = watchers.get(key) || [];
+    list.push(fn);
+    watchers.set(key, list);
+    return function () {
+      var current = watchers.get(key) || [];
+      watchers.set(key, current.filter(function (item) { return item !== fn; }));
+    };
+  }
+
+  function init(values) {
+    Object.keys(values || {}).forEach(function (key) { getState()[key] = values[key]; });
+    cache.clear();
+    dirty = true;
+    requestRender();
+  }
+
+  function state(initial) {
+    init(initial);
+    return new Proxy(initial || {}, {
+      get: function (_, key) { return getState()[key]; },
+      set: function (_, key, value) { set(key, value); return true; }
+    });
+  }
+
+  /* FIX: destroy() — elimina todos los listeners y limpia el estado */
+  function destroy() {
+    destroyCallbacks.forEach(function (fn) { if (typeof fn === "function") fn(); });
+    destroyCallbacks.length = 0;
+    delegationSetUp = false;
+    cache.clear();
+    watchers.clear();
+    index = { text: [], html: [], if_: [], style: [], attrs: [], class_: [], bind: [], for_: [], refs: [] };
+    dirty = false;
+    renderQueued = false;
+  }
+
+  global.Spork = {
+    set:       set,
+    init:      init,
+    state:     state,
+    batch:     batch,
+    watch:     watch,
+    destroy:   destroy,
+    rebuild:   function () { buildIndex(); render(); },  /* útil tras mutaciones dinámicas del DOM */
+    _eval:     evaluate,
+    configure: function (options) { debug = !!(options && options.debug); }
+  };
+
+  /* Atajos globales — permiten usar state(), batch(), watch() sin prefijo Spork. */
+  global.state = state;
+  global.batch = batch;
+  global.watch = watch;
+
+  global.addEventListener("DOMContentLoaded", function () {
+    if (global.__state) stateStore = global.__state;
+    buildIndex();
+    render();
+  });
+
+})(window);
+</script>
+
+<!-- ══ DEMO SCRIPT ════════════════════════════════════════════════════════ -->
+<script>
+/* Estado inicial */
+window.__state = {
+  theme: 'light',
+  count: 0,
+  greeting: 'Spork',
+  items: [
+    { id: 1, name: 'CSS Layers' },
+    { id: 2, name: 'Nesting Nativo' },
+    { id: 3, name: 'color-mix()' }
+  ],
+  progress: 65,
+  modalOpen: false,
+  showSecret: false,
+  newItem: '',
+  _nextId: 4
+};
+
+/* ── Tema ── */
+function toggleTheme() {
+  var isDark = document.documentElement.dataset.theme === 'dark';
+  var next = isDark ? 'light' : 'dark';
+  document.documentElement.dataset.theme = next;
+  document.getElementById('themeBtn').textContent = next === 'dark' ? '☀️ Claro' : '🌙 Oscuro';
+  document.body.style.background = ''; // let CSS tokens take over
+  Spork.set('theme', next);
+}
+
+/* ── Sidebar ── */
+var sidebarCollapsed = false;
+function toggleSidebar() {
+  sidebarCollapsed = !sidebarCollapsed;
+  document.getElementById('sidebar').classList.toggle('sz-collapsed', sidebarCollapsed);
+  document.getElementById('collapseBtn').textContent = sidebarCollapsed ? '⊢' : '⊣';
+}
+
+function toggleMobile() {
+  document.getElementById('shell').classList.toggle('sz-mobile-sidebar-open');
+}
+
+/* Mostrar hamburguesa en móvil */
+if (window.innerWidth <= 767) {
+  document.getElementById('menuBtn').style.display = '';
+}
+window.addEventListener('resize', function () {
+  document.getElementById('menuBtn').style.display = window.innerWidth <= 767 ? '' : 'none';
+});
+
+/* ── Navegación de sidebar ── */
+function navTo(el, id) {
+  document.querySelectorAll('.sz-sidebar-item').forEach(function (a) { a.classList.remove('sz-active'); });
+  el.classList.add('sz-active');
+  var target = document.getElementById(id);
+  if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  /* Cierra sidebar en móvil */
+  if (window.innerWidth <= 767) {
+    document.getElementById('shell').classList.remove('sz-mobile-sidebar-open');
+  }
+}
+
+/* ── Lista reactiva ── */
+window.removeItem = function (id) {
+  Spork.set('items', __state.items.filter(function (it) { return it.id !== id; }));
+};
+
+window.addItem = function () {
+  var val = (__state.newItem || '').trim();
+  if (!val) return;
+  Spork.set('items', __state.items.concat([{ id: __state._nextId++, name: val }]));
+  Spork.set('newItem', '');
+};
+
+/* ── Scrollspy ── */
+var sections = ['tipografia','botones','formularios','tarjetas','indicadores','alertas','tabla','nuevos','reactividad'];
+document.getElementById('mainArea').addEventListener('scroll', function () {
+  var scrollTop = this.scrollTop + 80;
+  var active = sections[0];
+  sections.forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollTop) active = id;
+  });
+  document.querySelectorAll('.sz-sidebar-item').forEach(function (a) {
+    var href = a.getAttribute('href');
+    a.classList.toggle('sz-active', href === '#' + active);
+  });
+});
+</script>
+
+</body></html>

@@ -2,7 +2,7 @@
 <html lang="es" class="sz-dark">
 <head>
     <meta charset="UTF-8">
-    <title>Spork UI — Manual Completo CSS v3.2 / JS v4.0</title>
+    <title>Spork UI — Manual Completo CSS v3.1 / JS v3.2</title>
     <link rel="stylesheet" href="spork.css">
     <style>
         .demo-box{background:var(--sz-surface);border:1px solid color-mix(in srgb,var(--sz-primary) 20%,transparent);border-radius:12px;padding:16px;margin:12px 0;display:flex;flex-direction:column;gap:10px}
@@ -31,7 +31,7 @@
 <!-- ── Cabecera ─────────────────────────────────────────────────────────── -->
 <div class="sz-card sz-center">
     <h1 class="sz-h1">⚡ Spork UI</h1>
-    <p class="sz-subtitle sz-muted">Manual Completo CSS v3.2 / JS v4.0 — Framework reactivo vanilla, sin Virtual DOM</p>
+    <p class="sz-subtitle sz-muted">Manual Completo CSS v3.1 / JS v3.2 — Framework reactivo vanilla, sin Virtual DOM</p>
     <div class="sz-row sz-mt-2">
         <span class="sz-badge">Proxy nativo</span>
         <span class="sz-badge">Sin dependencias</span>
@@ -79,7 +79,6 @@
             <a href="#utilidades">22. Utilidades</a>
             <a href="#temas">23. Temas claro/oscuro</a>
             <a href="#app-components">24. Componentes de App</a>
-            <a href="#seguridad">25. Seguridad, CSP y rendimiento</a>
         </div>
     </div>
 </div>
@@ -287,11 +286,11 @@ app.items = app.items.<span class="attr">sort</span>((a,b) => a.nombre.<span cla
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 6. API JS v4.0 — NUEVO                                               -->
+<!-- 6. API JS v3.2 — NUEVO                                               -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card sz-mt-2" id="api-js">
-    <h2 class="sz-h2">6. API JS — Eventos, Refs y ciclo de vida <span class="pill">nuevo</span></h2>
-    <p class="sz-p">Directivas y métodos del runtime: eventos genéricos, refs al DOM, innerHTML reactivo y gestión del ciclo de vida del componente.</p>
+    <h2 class="sz-h2">6. API JS v3.2 — Eventos, Refs y ciclo de vida <span class="pill">nuevo</span></h2>
+    <p class="sz-p">Nuevas directivas y métodos del runtime en v3.2: eventos genéricos, refs al DOM, innerHTML reactivo y gestión del ciclo de vida del componente.</p>
 
     <div class="demo-box">
         <div class="sz-row">
@@ -1027,7 +1026,7 @@ document.documentElement.setAttribute(<span class="str">data-theme</span>, <span
 
 
 <div class="sz-footer sz-center">
-    <p class="sz-caption">Spork UI CSS v3.2 / JS v4.0 — Vanilla JS · Sin dependencias · Mobile-first</p>
+    <p class="sz-caption">Spork UI CSS v3.1 / JS v3.2 — Vanilla JS · Sin dependencias · Mobile-first</p>
 </div>
 
 
@@ -1305,51 +1304,9 @@ document.documentElement.setAttribute(<span class="str">data-theme</span>, <span
 <span class="cmt">// .sz-drag-over se añade/elimina automáticamente en ondragover/ondragleave</span></div>
 </div>
 
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 25. SEGURIDAD, CSP Y RENDIMIENTO                                      -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<div class="sz-card sz-mt-2" id="seguridad">
-    <h2 class="sz-h2">25. Seguridad, CSP y rendimiento <span class="pill">v4.0</span></h2>
-    <p class="sz-p">Spork JS 4.0 ya <strong>no usa <code class="sz-mono">eval</code> ni <code class="sz-mono">new Function</code></strong>: las expresiones de los atributos <code class="sz-mono">data-spork-*</code> las ejecuta un intérprete propio. Por eso funciona con una CSP estricta (<code class="sz-mono">script-src 'self'</code>) sin <code class="sz-mono">'unsafe-eval'</code>.</p>
-
-    <div class="sz-alert sz-alert-warning"><span>⚠️</span><div>Las expresiones son <strong>código del desarrollador</strong>. Nunca insertes texto escrito por usuarios dentro de un atributo <code class="sz-mono">data-spork-*</code>.</div></div>
-
-    <div class="code-snippet"><span class="cmt">// Soportado en expresiones</span>
-literales · + - * / % ** · == != === !== &lt; &gt; &lt;= &gt;= · &amp;&amp; || ?? · ! typeof
-a ? b : c · a?.b · a[b] · f(x) · `plantilla ${x}` · [1, ...lista] · {a: 1, ...obj}
-x =&gt; x * 2 · (a, b) =&gt; a + b · a = 1 · a += 1 · a++ · if (c) f(); else g()
-
-<span class="cmt">// Bloqueado por seguridad</span>
-constructor · __proto__ · prototype · eval · Function
-
-<span class="cmt">// HTML reactivo: se sanea por defecto (scripts, on*, javascript:)</span>
-Spork.configure({ sanitize: true });          <span class="cmt">// por defecto</span>
-Spork.configure({ sanitize: html =&gt; miSanitizador(html) });
-Spork.configure({ sanitize: false });         <span class="cmt">// solo si el HTML es 100% de confianza</span></div>
-
-    <h3 class="sz-h3">Rendimiento: dependencias por binding</h3>
-    <p class="sz-p">Cada binding recuerda qué claves del estado ha leído. Al cambiar <code class="sz-mono">contador</code> solo se reevalúan los bindings que lo usan, no toda la página. Las listas con <code class="sz-mono">data-spork-for-key</code> reutilizan los nodos existentes.</p>
-
-    <div class="code-snippet"><span class="cmt">// Asignar una clave nueva → render preciso</span>
-app.contador = 5;
-
-<span class="cmt">// Mutar un objeto/array in situ NO avisa solo: avisa tú</span>
-app.usuario.nombre = "Ana";
-Spork.touch("usuario");        <span class="cmt">// reevalúa solo lo que lee "usuario"</span>
-Spork.refresh();               <span class="cmt">// o reevalúa todo</span>
-
-<span class="cmt">// Varios cambios, un solo render</span>
-Spork.batch(() =&gt; { app.a = 1; app.b = 2; app.c = 3; });</div>
-
-    <h3 class="sz-h3">Tests</h3>
-    <p class="sz-p">El repositorio incluye <code class="sz-mono">tests/run_tests.py</code> (Playwright + Chromium) con ~80 comprobaciones: motor de expresiones, seguridad, bindings, listas, rendimiento y CSP estricta.</p>
-    <div class="code-snippet">pip install playwright &amp;&amp; playwright install chromium
-python3 tests/run_tests.py</div>
-</div>
-
 <!-- ── Footer ─────────────────────────────────────────────────────────── -->
 <div class="sz-footer sz-center">
-    <p class="sz-caption">Spork UI CSS v3.2 / JS v4.0 — Vanilla JS · Sin dependencias · Mobile-first · App-ready</p>
+    <p class="sz-caption">Spork UI CSS v3.1 / JS v3.2 — Vanilla JS · Sin dependencias · Mobile-first · App-ready</p>
 </div>
 </div><!-- #app -->
 

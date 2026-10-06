@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="es" class="sz-dark">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Spork UI — Manual Completo CSS v3.2 / JS v4.0</title>
+    <title>Spork UI — Manual Completo v3.0</title>
     <link rel="stylesheet" href="spork.css">
     <style>
         .demo-box{background:var(--sz-surface);border:1px solid color-mix(in srgb,var(--sz-primary) 20%,transparent);border-radius:12px;padding:16px;margin:12px 0;display:flex;flex-direction:column;gap:10px}
@@ -13,25 +13,15 @@
         .kw{color:#ff7b72}.str{color:#a5d6ff}.cmt{color:#8b949e;font-style:italic}.tag{color:#7ee787}.attr{color:#79c0ff}.val{color:#a5d6ff}
         h2[id]{scroll-margin-top:20px}
         .pill{display:inline-block;background:color-mix(in srgb,var(--sz-primary) 15%,transparent);color:var(--sz-primary);font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;font-family:ui-monospace,monospace}
-        /* ── Sortable drag-and-drop ─────────────────────────────────────── */
-        .sz-drag-handle{cursor:grab;opacity:.4;user-select:none;padding:0 6px;font-size:1rem;flex-shrink:0}
-        .sz-drag-handle:hover{opacity:1}
-        [draggable="true"]{cursor:grab;transition:opacity .15s,box-shadow .15s,transform .15s}
-        [draggable="true"]:active{cursor:grabbing}
-        .sz-dragging{opacity:.3;transform:scale(.98)}
-        .sz-drag-over-item{box-shadow:0 -2px 0 var(--sz-primary) inset !important;background:color-mix(in srgb,var(--sz-primary) 6%,transparent) !important}
-        .sortable-list{display:flex;flex-direction:column;gap:6px;list-style:none;padding:0;margin:0}
-        .sortable-list li{display:flex;align-items:center;gap:8px;background:var(--sz-surface);border:1px solid color-mix(in srgb,var(--sz-on-surface) 12%,transparent);border-radius:8px;padding:8px 12px;font-size:.9rem}
-        .drop-files-name{font-size:.78rem;color:var(--sz-primary);margin-top:4px;font-family:ui-monospace,monospace}
     </style>
 </head>
-<body>
+<body class="sz-dark">
 <div id="app" class="sz-page">
 
 <!-- ── Cabecera ─────────────────────────────────────────────────────────── -->
 <div class="sz-card sz-center">
     <h1 class="sz-h1">⚡ Spork UI</h1>
-    <p class="sz-subtitle sz-muted">Manual Completo CSS v3.2 / JS v4.0 — Framework reactivo vanilla, sin Virtual DOM</p>
+    <p class="sz-subtitle sz-muted">Manual Completo v3.0 — Framework reactivo vanilla, sin Virtual DOM</p>
     <div class="sz-row sz-mt-2">
         <span class="sz-badge">Proxy nativo</span>
         <span class="sz-badge">Sin dependencias</span>
@@ -51,35 +41,32 @@
             <a href="#condicional">3. Condicionales y Clases</a>
             <a href="#attrs">4. Atributos y Estilos</a>
             <a href="#listas">5. Listas y Bucles</a>
-            <a href="#api-js">6. API JS: eventos, refs, destroy…</a>
         </div>
         <div class="section-index">
             <strong class="sz-label sz-muted">Componentes</strong>
-            <a href="#botones">7. Botones</a>
-            <a href="#inputs">8. Formularios</a>
-            <a href="#cards">9. Cards</a>
-            <a href="#modal">10. Modal</a>
-            <a href="#toast">11. Toast</a>
-            <a href="#badges-alerts">12. Badges y Alertas</a>
+            <a href="#botones">6. Botones</a>
+            <a href="#inputs">7. Formularios</a>
+            <a href="#cards">8. Cards</a>
+            <a href="#modal">9. Modal</a>
+            <a href="#toast">10. Toast</a>
         </div>
         <div class="section-index">
             <strong class="sz-label sz-muted">Componentes II</strong>
-            <a href="#tabs">13. Tabs</a>
-            <a href="#spinner">14. Spinner y Skeleton</a>
-            <a href="#avatar">15. Avatar</a>
-            <a href="#switch">16. Switch y Slider</a>
-            <a href="#tooltip">17. Tooltip</a>
+            <a href="#tabs">11. Tabs</a>
+            <a href="#spinner">12. Spinner y Skeleton</a>
+            <a href="#avatar">13. Avatar</a>
+            <a href="#switch">14. Switch y Slider</a>
+            <a href="#tooltip">15. Tooltip</a>
         </div>
         <div class="section-index">
             <strong class="sz-label sz-muted">Utilidades</strong>
-            <a href="#layout">18. Layout</a>
-            <a href="#tipografia">19. Tipografía</a>
-            <a href="#tabla">20. Tablas</a>
-            <a href="#animaciones">21. Animaciones</a>
-            <a href="#utilidades">22. Utilidades</a>
-            <a href="#temas">23. Temas claro/oscuro</a>
-            <a href="#app-components">24. Componentes de App</a>
-            <a href="#seguridad">25. Seguridad, CSP y rendimiento</a>
+            <a href="#layout">16. Layout</a>
+            <a href="#tipografia">17. Tipografía</a>
+            <a href="#tabla">18. Tablas</a>
+            <a href="#animaciones">19. Animaciones</a>
+            <a href="#utilidades">20. Utilidades</a>
+            <a href="#temas">21. Temas claro/oscuro</a>
+            <a href="#app-components">22. Componentes de App</a>
         </div>
     </div>
 </div>
@@ -128,13 +115,11 @@ app.contador = <span class="val">0</span>;       <span class="cmt">// ✓ reacti
     <p class="sz-p">Cinco atributos <code class="sz-mono">data-spork-*</code> cubren todos los casos de binding reactivo:</p>
     <div class="sz-row sz-start sz-gap-2" style="flex-wrap:wrap">
         <span class="pill">data-spork-text</span>
-        <span class="pill">data-spork-html</span>
         <span class="pill">data-spork-bind</span>
         <span class="pill">data-spork-if</span>
         <span class="pill">data-spork-class</span>
         <span class="pill">data-spork-style</span>
         <span class="pill">data-spork-attrs</span>
-        <span class="pill">data-spork-ref</span>
     </div>
 
     <div class="demo-box">
@@ -161,16 +146,9 @@ app.contador = <span class="val">0</span>;       <span class="cmt">// ✓ reacti
         <p class="sz-caption">Seleccionado: <span data-spork-text="opcion"></span></p>
     </div>
 
-    <div class="code-snippet"><span class="cmt">// data-spork-text — muestra valor como texto (escapa HTML)</span>
+    <div class="code-snippet"><span class="cmt">// data-spork-text — muestra valor como texto</span>
 <span class="tag">&lt;span</span> <span class="attr">data-spork-text</span>=<span class="str">"nombre"</span><span class="tag">&gt;&lt;/span&gt;</span>
 <span class="tag">&lt;span</span> <span class="attr">data-spork-text</span>=<span class="str">"'Hola ' + nombre"</span><span class="tag">&gt;&lt;/span&gt;</span>   <span class="cmt">// expresión JS</span>
-
-<span class="cmt">// data-spork-html — innerHTML reactivo (⚠️ sanitiza la fuente)</span>
-<span class="tag">&lt;div</span> <span class="attr">data-spork-html</span>=<span class="str">"contenidoHtml"</span><span class="tag">&gt;&lt;/div&gt;</span>
-
-<span class="cmt">// data-spork-ref — expone el elemento en state.$refs</span>
-<span class="tag">&lt;canvas</span> <span class="attr">data-spork-ref</span>=<span class="str">"miCanvas"</span><span class="tag">&gt;&lt;/canvas&gt;</span>
-<span class="cmt">// acceso: app.$refs.miCanvas.getContext('2d')</span>
 
 <span class="cmt">// data-spork-bind — two-way binding (input, checkbox, select)</span>
 <span class="tag">&lt;input</span> <span class="attr">type</span>=<span class="str">"text"</span>     <span class="attr">data-spork-bind</span>=<span class="str">"nombre"</span><span class="tag">&gt;</span>
@@ -269,75 +247,23 @@ app.contador = <span class="val">0</span>;       <span class="cmt">// ✓ reacti
     <div class="code-snippet"><span class="cmt">// Estructura obligatoria: contenedor + template con mismo ID</span>
 <span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="str">"lista"</span>
     <span class="attr">data-spork-for-src</span>=<span class="str">"items"</span>
-    <span class="attr">data-spork-for-var</span>=<span class="str">"item"</span>
-    <span class="attr">data-spork-for-key</span>=<span class="str">"item.id"</span><span class="tag">&gt;&lt;/ul&gt;</span>  <span class="cmt">// ← key: reconciliación DOM</span>
+    <span class="attr">data-spork-for-var</span>=<span class="str">"item"</span><span class="tag">&gt;&lt;/ul&gt;</span>
 
 <span class="tag">&lt;template</span> <span class="attr">data-spork-for-template</span>=<span class="str">"lista"</span><span class="tag">&gt;</span>
     <span class="tag">&lt;li</span> <span class="attr">data-spork-text</span>=<span class="str">"item.nombre"</span><span class="tag">&gt;&lt;/li&gt;</span>
 <span class="tag">&lt;/template&gt;</span>
 
-<span class="cmt">// data-spork-for-key — reutiliza nodos DOM existentes por clave</span>
-<span class="cmt">// Evita parpadeo y preserva el estado del DOM (focus, inputs, etc.)</span>
-<span class="cmt">// Sin key: re-renderiza todos los nodos en cada cambio</span>
-
 <span class="cmt">// Actualizar lista — asignar nuevo array dispara re-render</span>
-app.items = [...app.items, { id: Date.now(), nombre: <span class="str">"nuevo"</span> }];
+app.items = [...app.items, { nombre: <span class="str">"nuevo"</span> }];
 app.items = app.items.<span class="attr">filter</span>(i => i.activo);
 app.items = app.items.<span class="attr">sort</span>((a,b) => a.nombre.<span class="attr">localeCompare</span>(b.nombre));</div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 6. API JS v4.0 — NUEVO                                               -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<div class="sz-card sz-mt-2" id="api-js">
-    <h2 class="sz-h2">6. API JS — Eventos, Refs y ciclo de vida <span class="pill">nuevo</span></h2>
-    <p class="sz-p">Directivas y métodos del runtime: eventos genéricos, refs al DOM, innerHTML reactivo y gestión del ciclo de vida del componente.</p>
-
-    <div class="demo-box">
-        <div class="sz-row">
-            <button class="sz-btn sz-btn-filled sz-btn-sm"
-                data-spork-on="click:contadorApi++"
-                data-spork-ref="btnApi">+ Clic (data-spork-on)</button>
-            <button class="sz-btn sz-btn-outlined sz-btn-sm"
-                data-spork-on="click:contadorApi--">- Clic</button>
-            <span class="sz-badge sz-badge-primary sz-mono" data-spork-text="contadorApi"></span>
-        </div>
-        <div data-spork-html="'<strong>' + contadorApi + '</strong> clics — HTML reactivo'"></div>
-    </div>
-
-    <div class="code-snippet"><span class="cmt">// data-spork-on="evento:expresión" — cualquier evento DOM</span>
-<span class="tag">&lt;button</span> <span class="attr">data-spork-on</span>=<span class="str">"click:contador++"</span><span class="tag">&gt;</span>+<span class="tag">&lt;/button&gt;</span>
-<span class="tag">&lt;form</span>   <span class="attr">data-spork-on</span>=<span class="str">"submit:guardar()"</span><span class="tag">&gt;</span>
-<span class="tag">&lt;input</span>  <span class="attr">data-spork-on</span>=<span class="str">"focus:activo=true; blur:activo=false"</span><span class="tag">&gt;</span>  <span class="cmt">// ← múltiples eventos, separados por ;</span>
-
-<span class="cmt">// data-spork-html — innerHTML reactivo (⚠️ sanitiza)</span>
-<span class="tag">&lt;div</span> <span class="attr">data-spork-html</span>=<span class="str">"htmlContent"</span><span class="tag">&gt;&lt;/div&gt;</span>
-
-<span class="cmt">// data-spork-ref — expone el elemento en state.$refs.nombre</span>
-<span class="tag">&lt;canvas</span> <span class="attr">data-spork-ref</span>=<span class="str">"chart"</span><span class="tag">&gt;&lt;/canvas&gt;</span>
-<span class="cmt">// uso en JS:</span>
-app.$refs.chart.getContext(<span class="str">'2d'</span>);
-
-<span class="cmt">// API del objeto estado:</span>
-app.<span class="attr">batch</span>(<span class="kw">function</span>() {   <span class="cmt">// agrupa múltiples set() en un solo render</span>
-    app.a = <span class="val">1</span>;
-    app.b = <span class="val">2</span>;
-    app.c = <span class="val">3</span>;
-});
-
-app.<span class="attr">watch</span>(<span class="str">'contador'</span>, <span class="kw">function</span>(val) {  <span class="cmt">// watcher reactivo</span>
-    console.<span class="attr">log</span>(<span class="str">'contador cambió a'</span>, val);
-});
-
-app.<span class="attr">rebuild</span>();  <span class="cmt">// re-escanea el DOM (tras mutaciones externas)</span>
-app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners y estado (unmount)</span></div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 7. BOTONES                                                            -->
+<!-- 6. BOTONES                                                            -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="botones">
-    <h2 class="sz-h2">7. Botones</h2>
+    <h2 class="sz-h2">6. Botones</h2>
 
     <div class="demo-box">
         <label class="sz-label">Variantes:</label>
@@ -379,10 +305,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 8. FORMULARIOS                                                        -->
+<!-- 7. FORMULARIOS                                                        -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="inputs">
-    <h2 class="sz-h2">8. Formularios e Inputs</h2>
+    <h2 class="sz-h2">7. Formularios e Inputs</h2>
 
     <div class="demo-box">
         <div class="sz-field">
@@ -431,10 +357,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 9. CARDS                                                              -->
+<!-- 8. CARDS                                                              -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="cards">
-    <h2 class="sz-h2">9. Cards</h2>
+    <h2 class="sz-h2">8. Cards</h2>
 
     <div class="demo-box">
         <div class="sz-grid">
@@ -462,10 +388,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 10. MODAL                                                             -->
+<!-- 9. MODAL                                                              -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="modal">
-    <h2 class="sz-h2">10. Modal</h2>
+    <h2 class="sz-h2">9. Modal</h2>
 
     <div class="demo-box">
         <button class="sz-btn sz-btn-filled" onclick="app.modalOpen=true">Abrir Modal</button>
@@ -506,10 +432,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 11. TOAST                                                             -->
+<!-- 10. TOAST                                                             -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="toast">
-    <h2 class="sz-h2">11. Toast / Notificaciones</h2>
+    <h2 class="sz-h2">10. Toast / Notificaciones</h2>
 
     <div class="demo-box">
         <div class="sz-row">
@@ -538,53 +464,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 12. BADGES Y ALERTAS                                                  -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<div class="sz-card" id="badges-alerts">
-    <h2 class="sz-h2">12. Badges y Alertas <span class="pill">actualizado v3.1</span></h2>
-    <p class="sz-p">En v3.1 se añaden tokens de color <code class="sz-mono">--sz-success</code> y <code class="sz-mono">--sz-warning</code>, con variantes de badge y alerta para los cuatro estados semánticos.</p>
-
-    <div class="demo-box">
-        <label class="sz-label">Badges:</label>
-        <div class="sz-row" style="flex-wrap:wrap">
-            <span class="sz-badge">Default</span>
-            <span class="sz-badge sz-badge-primary">Primary</span>
-            <span class="sz-badge" style="background:color-mix(in srgb,var(--sz-success) 15%,transparent);color:var(--sz-success)">✅ Success</span>
-            <span class="sz-badge" style="background:color-mix(in srgb,var(--sz-warning) 15%,transparent);color:var(--sz-warning)">⚠️ Warning</span>
-            <span class="sz-badge" style="background:color-mix(in srgb,var(--sz-error) 15%,transparent);color:var(--sz-error)">❌ Error</span>
-        </div>
-        <label class="sz-label sz-mt-1">Alertas:</label>
-        <div class="sz-col sz-gap-2">
-            <div class="sz-alert">ℹ️ Alerta informativa — variante por defecto</div>
-            <div class="sz-alert sz-alert-success">✅ Operación completada con éxito</div>
-            <div class="sz-alert sz-alert-warning">⚠️ Revisa esta configuración antes de continuar</div>
-            <div class="sz-alert sz-alert-error">❌ Error crítico — no se pudo procesar la solicitud</div>
-        </div>
-    </div>
-
-    <div class="code-snippet"><span class="cmt">// Badges — usa clases utilitarias de color</span>
-<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-badge"</span><span class="tag">&gt;</span>Default<span class="tag">&lt;/span&gt;</span>
-<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-badge sz-badge-primary"</span><span class="tag">&gt;</span>Primary<span class="tag">&lt;/span&gt;</span>
-<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-badge sz-badge-success"</span><span class="tag">&gt;</span>Success<span class="tag">&lt;/span&gt;</span>   <span class="cmt">// nuevo v3.1</span>
-<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-badge sz-badge-warning"</span><span class="tag">&gt;</span>Warning<span class="tag">&lt;/span&gt;</span>   <span class="cmt">// nuevo v3.1</span>
-<span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-badge sz-badge-error"</span><span class="tag">&gt;</span>Error<span class="tag">&lt;/span&gt;</span>     <span class="cmt">// nuevo v3.1</span>
-
-<span class="cmt">// Alertas</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-alert"</span><span class="tag">&gt;</span>Información<span class="tag">&lt;/div&gt;</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-alert sz-alert-success"</span><span class="tag">&gt;</span>Éxito<span class="tag">&lt;/div&gt;</span>       <span class="cmt">// nuevo v3.1</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-alert sz-alert-warning"</span><span class="tag">&gt;</span>Advertencia<span class="tag">&lt;/div&gt;</span> <span class="cmt">// nuevo v3.1</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-alert sz-alert-error"</span><span class="tag">&gt;</span>Error<span class="tag">&lt;/div&gt;</span>       <span class="cmt">// nuevo v3.1</span>
-
-<span class="cmt">// Tokens de color disponibles en CSS</span>
-<span class="cmt">--sz-success: #2e7d32   --sz-on-success: #fff</span>
-<span class="cmt">--sz-warning: #e65100   --sz-on-warning: #fff</span></div>
-</div>
-
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 13. TABS                                                              -->
+<!-- 11. TABS                                                              -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="tabs">
-    <h2 class="sz-h2">13. Tabs</h2>
+    <h2 class="sz-h2">11. Tabs</h2>
 
     <div class="demo-box">
         <div class="sz-tabs">
@@ -623,10 +506,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 14. SPINNER Y SKELETON                                                -->
+<!-- 12. SPINNER Y SKELETON                                                -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="spinner">
-    <h2 class="sz-h2">14. Spinner y Skeleton <span class="pill">actualizado v3.1</span></h2>
+    <h2 class="sz-h2">12. Spinner y Skeleton</h2>
 
     <div class="demo-box">
         <label class="sz-label">Spinners:</label>
@@ -667,10 +550,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 15. AVATAR                                                            -->
+<!-- 13. AVATAR                                                            -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="avatar">
-    <h2 class="sz-h2">15. Avatar</h2>
+    <h2 class="sz-h2">13. Avatar</h2>
 
     <div class="demo-box">
         <div class="sz-row">
@@ -704,10 +587,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 16. SWITCH Y SLIDER                                                   -->
+<!-- 14. SWITCH Y SLIDER                                                   -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="switch">
-    <h2 class="sz-h2">16. Switch y Slider</h2>
+    <h2 class="sz-h2">14. Switch y Slider</h2>
 
     <div class="demo-box">
         <label class="sz-switch">
@@ -744,51 +627,40 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 17. TOOLTIP                                                           -->
+<!-- 15. TOOLTIP                                                           -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="tooltip">
-    <h2 class="sz-h2">17. Tooltip <span class="pill">actualizado v3.1</span></h2>
+    <h2 class="sz-h2">15. Tooltip</h2>
 
     <div class="demo-box">
-        <p class="sz-caption sz-muted">Posición por defecto (arriba) y variantes direccionales:</p>
-        <div class="sz-row" style="flex-wrap:wrap;padding:24px 0">
+        <div class="sz-row">
             <div class="sz-tooltip-wrap">
-                <button class="sz-btn sz-btn-filled sz-btn-sm">Top (default)</button>
-                <div class="sz-tooltip">Tooltip arriba ⚡</div>
+                <button class="sz-btn sz-btn-filled">Hover aquí</button>
+                <div class="sz-tooltip">Soy un tooltip ⚡</div>
             </div>
             <div class="sz-tooltip-wrap">
-                <button class="sz-btn sz-btn-outlined sz-btn-sm">Bottom</button>
-                <div class="sz-tooltip sz-tooltip-bottom">Tooltip abajo</div>
+                <span class="sz-badge sz-clickable">ℹ️ Info</span>
+                <div class="sz-tooltip">Información adicional sobre este elemento</div>
             </div>
             <div class="sz-tooltip-wrap">
-                <button class="sz-btn sz-btn-outlined sz-btn-sm">Left</button>
-                <div class="sz-tooltip sz-tooltip-left">Tooltip izquierda</div>
-            </div>
-            <div class="sz-tooltip-wrap">
-                <button class="sz-btn sz-btn-outlined sz-btn-sm">Right</button>
-                <div class="sz-tooltip sz-tooltip-right">Tooltip derecha</div>
+                <button class="sz-btn sz-btn-icon sz-btn-outlined">?</button>
+                <div class="sz-tooltip">Ayuda contextual</div>
             </div>
         </div>
     </div>
 
     <div class="code-snippet"><span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip-wrap"</span><span class="tag">&gt;</span>
     <span class="tag">&lt;button</span> <span class="attr">class</span>=<span class="str">"sz-btn sz-btn-filled"</span><span class="tag">&gt;</span>Elemento<span class="tag">&lt;/button&gt;</span>
-    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip"</span><span class="tag">&gt;</span>Arriba (default)<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip"</span><span class="tag">&gt;</span>Texto del tooltip<span class="tag">&lt;/div&gt;</span>
 <span class="tag">&lt;/div&gt;</span>
-
-<span class="cmt">// Variantes de posición — nuevo v3.1</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip sz-tooltip-bottom"</span><span class="tag">&gt;</span>Abajo<span class="tag">&lt;/div&gt;</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip sz-tooltip-left"</span><span class="tag">&gt;</span>Izquierda<span class="tag">&lt;/div&gt;</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-tooltip sz-tooltip-right"</span><span class="tag">&gt;</span>Derecha<span class="tag">&lt;/div&gt;</span>
-
 <span class="cmt">// El tooltip aparece al hacer hover — CSS puro, sin JS</span></div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 18. LAYOUT                                                            -->
+<!-- 16. LAYOUT                                                            -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="layout">
-    <h2 class="sz-h2">18. Layout</h2>
+    <h2 class="sz-h2">16. Layout</h2>
 
     <div class="demo-box">
         <label class="sz-label">sz-row — fila horizontal centrada:</label>
@@ -822,10 +694,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 19. TIPOGRAFÍA                                                        -->
+<!-- 17. TIPOGRAFÍA                                                        -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="tipografia">
-    <h2 class="sz-h2">19. Tipografía</h2>
+    <h2 class="sz-h2">17. Tipografía</h2>
 
     <div class="demo-box">
         <p class="sz-h1">sz-h1 — Título principal</p>
@@ -852,10 +724,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 20. TABLAS                                                            -->
+<!-- 18. TABLAS                                                            -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="tabla">
-    <h2 class="sz-h2">20. Tablas</h2>
+    <h2 class="sz-h2">18. Tablas</h2>
 
     <div class="demo-box">
         <div class="sz-table-container">
@@ -881,10 +753,10 @@ app.<span class="attr">destroy</span>();  <span class="cmt">// limpia listeners 
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 21. ANIMACIONES                                                       -->
+<!-- 19. ANIMACIONES                                                       -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="animaciones">
-    <h2 class="sz-h2">21. Animaciones</h2>
+    <h2 class="sz-h2">19. Animaciones</h2>
 
     <div class="demo-box">
         <div class="sz-row">
@@ -912,10 +784,10 @@ el.classList.<span class="attr">remove</span>(<span class="str">'sz-fade-in'</sp
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 22. UTILIDADES                                                        -->
+<!-- 20. UTILIDADES                                                        -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="utilidades">
-    <h2 class="sz-h2">22. Utilidades</h2>
+    <h2 class="sz-h2">20. Utilidades</h2>
 
     <div class="demo-box">
         <label class="sz-label">Sombras:</label>
@@ -976,17 +848,17 @@ sz-p-0   sz-p-1   sz-p-2   sz-p-3   sz-m-0</div>
 </div>
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 23. TEMAS                                                             -->
+<!-- 21. TEMAS                                                             -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="temas">
-    <h2 class="sz-h2">23. Temas Claro / Oscuro</h2>
+    <h2 class="sz-h2">21. Temas Claro / Oscuro</h2>
     <p class="sz-p">Spork CSS usa variables CSS para temas. El tema claro es el predeterminado (<code class="sz-mono">:root</code>), el oscuro se activa con <code class="sz-mono">.sz-dark</code> o <code class="sz-mono">data-theme="dark"</code>. También respeta <code class="sz-mono">prefers-color-scheme</code> automáticamente sin JS.</p>
 
     <div class="demo-box">
         <div class="sz-row sz-spread">
             <span class="sz-label">Tema actual: <strong data-spork-text="temaOscuro ? '🌙 Oscuro' : '☀️ Claro'"></strong></span>
             <label class="sz-switch">
-                <input type="checkbox" data-spork-bind="temaOscuro" onchange="setTema(app.temaOscuro)">
+                <input type="checkbox" data-spork-bind="temaOscuro" onchange="document.body.classList.toggle('sz-dark', app.temaOscuro)">
                 <div class="sz-switch-track"><div class="sz-switch-thumb"></div></div>
                 <span class="sz-switch-label">Modo oscuro</span>
             </label>
@@ -1011,15 +883,15 @@ sz-p-0   sz-p-1   sz-p-2   sz-p-3   sz-m-0</div>
 document.body.classList.toggle(<span class="str">sz-dark</span>);
 
 <span class="cmt">// Con estado reactivo Spork</span>
-<span class="tag">&lt;body</span> <span class="attr">data-spork-class</span>=<span class="str">{sz-dark: temaOscuro}</span><span class="tag">&gt;</span>
+<span class="tag">lt;body</span> <span class="attr">data-spork-class</span>=<span class="str">{sz-dark: temaOscuro}</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
 
 <span class="cmt">// data-theme funciona igual que la clase</span>
 document.documentElement.setAttribute(<span class="str">data-theme</span>, <span class="str">dark</span>);
 document.documentElement.setAttribute(<span class="str">data-theme</span>, <span class="str">light</span>);
 
 <span class="cmt">// Forzar claro/oscuro en un elemento concreto</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-light"</span><span class="tag">&gt;</span>Siempre claro<span class="tag">&lt;/div&gt;</span>
-<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-dark"</span><span class="tag">&gt;</span>Siempre oscuro<span class="tag">&lt;/div&gt;</span>
+<span class="tag">lt;div</span> <span class="attr">class</span>=<span class="str">"sz-light"</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>Siempre claro<span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->lt;/div<!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
+<span class="tag">lt;div</span> <span class="attr">class</span>=<span class="str">"sz-dark"</span><span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>Siempre oscuro<span class="tag"><!-- ── Footer ─────────────────────────────────────────────────────────── -->lt;/div<!-- ── Footer ─────────────────────────────────────────────────────────── -->gt;</span>
 
 <span class="cmt">// Sin JS — respeta prefers-color-scheme automáticamente</span>
 <span class="cmt">// :root sin .sz-light ni .sz-dark → sigue la preferencia del sistema</span></div>
@@ -1027,15 +899,15 @@ document.documentElement.setAttribute(<span class="str">data-theme</span>, <span
 
 
 <div class="sz-footer sz-center">
-    <p class="sz-caption">Spork UI CSS v3.2 / JS v4.0 — Vanilla JS · Sin dependencias · Mobile-first</p>
+    <p class="sz-caption">Spork UI v3.0 — Vanilla JS · Sin dependencias · Mobile-first</p>
 </div>
 
 
 <!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 24. COMPONENTES DE APP                                                -->
+<!-- 22. COMPONENTES DE APP                                                -->
 <!-- ══════════════════════════════════════════════════════════════════════ -->
 <div class="sz-card" id="app-components">
-    <h2 class="sz-h2">24. Componentes de App</h2>
+    <h2 class="sz-h2">22. Componentes de App</h2>
     <p class="sz-p">Layout completo para aplicaciones de escritorio: toolbar, sidebar, main, statusbar — todo en un grid CSS sin JS.</p>
 
     <!-- App Shell demo -->
@@ -1181,91 +1053,18 @@ document.documentElement.setAttribute(<span class="str">data-theme</span>, <span
 <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-panels sz-vertical"</span><span class="tag">&gt;</span>   <span class="cmt">// vertical</span></div>
 </div>
 
-<!-- Drag & Drop — Sortable -->
+<!-- Drag & Drop -->
 <div class="sz-card">
-    <h2 class="sz-h2">Drag &amp; Drop — Lista sortable <span class="pill">demo real</span></h2>
-    <p class="sz-p">Arrastra los ítems por el handle ⠿ para reordenarlos. El array en el estado Spork se actualiza automáticamente — sin librerías externas.</p>
+    <h2 class="sz-h2">Drag & Drop y más</h2>
     <div class="demo-box">
-        <ul class="sortable-list" id="sort-list"></ul>
-        <p class="sz-caption sz-muted sz-mt-1">Orden actual: <span id="sort-order" class="sz-mono" style="font-size:.78rem"></span></p>
-    </div>
-
-    <div class="code-snippet"><span class="cmt">// HTML — cada ítem con atributo draggable y handle visual</span>
-<span class="tag">&lt;ul</span> <span class="attr">id</span>=<span class="str">"mi-lista"</span><span class="tag">&gt;</span>
-    <span class="tag">&lt;li</span> <span class="attr">draggable</span>=<span class="str">"true"</span><span class="tag">&gt;</span>
-        <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-drag-handle"</span><span class="tag">&gt;</span>⠿<span class="tag">&lt;/span&gt;</span>
-        Ítem A
-    <span class="tag">&lt;/li&gt;</span>
-<span class="tag">&lt;/ul&gt;</span>
-
-<span class="cmt">// JS — helper reutilizable que actualiza estado Spork</span>
-<span class="kw">function</span> <span class="attr">sporkSortable</span>(listEl, getArr, setArr) {
-    <span class="kw">let</span> dragIdx = <span class="kw">null</span>;
-
-    listEl.<span class="attr">addEventListener</span>(<span class="str">'dragstart'</span>, e =&gt; {
-        <span class="kw">const</span> li = e.target.<span class="attr">closest</span>(<span class="str">'[draggable]'</span>);
-        <span class="kw">if</span> (!li) <span class="kw">return</span>;
-        dragIdx = [...listEl.children].<span class="attr">indexOf</span>(li);
-        <span class="attr">setTimeout</span>(() =&gt; li.classList.<span class="attr">add</span>(<span class="str">'sz-dragging'</span>), <span class="val">0</span>);
-    });
-
-    listEl.<span class="attr">addEventListener</span>(<span class="str">'dragend'</span>, () =&gt; {
-        listEl.<span class="attr">querySelectorAll</span>(<span class="str">'.sz-dragging,.sz-drag-over-item'</span>)
-              .<span class="attr">forEach</span>(el =&gt; el.classList.<span class="attr">remove</span>(<span class="str">'sz-dragging'</span>, <span class="str">'sz-drag-over-item'</span>));
-    });
-
-    listEl.<span class="attr">addEventListener</span>(<span class="str">'dragover'</span>, e =&gt; {
-        e.<span class="attr">preventDefault</span>();
-        <span class="kw">const</span> li = e.target.<span class="attr">closest</span>(<span class="str">'[draggable]'</span>);
-        <span class="kw">if</span> (!li) <span class="kw">return</span>;
-        listEl.<span class="attr">querySelectorAll</span>(<span class="str">'.sz-drag-over-item'</span>)
-              .<span class="attr">forEach</span>(el =&gt; el.classList.<span class="attr">remove</span>(<span class="str">'sz-drag-over-item'</span>));
-        li.classList.<span class="attr">add</span>(<span class="str">'sz-drag-over-item'</span>);
-    });
-
-    listEl.<span class="attr">addEventListener</span>(<span class="str">'drop'</span>, e =&gt; {
-        e.<span class="attr">preventDefault</span>();
-        <span class="kw">const</span> li = e.target.<span class="attr">closest</span>(<span class="str">'[draggable]'</span>);
-        <span class="kw">if</span> (!li || dragIdx === <span class="kw">null</span>) <span class="kw">return</span>;
-        <span class="kw">const</span> dropIdx = [...listEl.children].<span class="attr">indexOf</span>(li);
-        <span class="kw">if</span> (dragIdx === dropIdx) <span class="kw">return</span>;
-        <span class="kw">const</span> arr = [...<span class="attr">getArr</span>()];
-        <span class="kw">const</span> [moved] = arr.<span class="attr">splice</span>(dragIdx, <span class="val">1</span>);
-        arr.<span class="attr">splice</span>(dropIdx, <span class="val">0</span>, moved);
-        <span class="attr">setArr</span>(arr);  <span class="cmt">// ← actualiza estado Spork → re-render automático</span>
-        dragIdx = <span class="kw">null</span>;
-    });
-}
-
-<span class="cmt">// Montaje:</span>
-<span class="attr">sporkSortable</span>(
-    document.<span class="attr">getElementById</span>(<span class="str">'mi-lista'</span>),
-    () =&gt; app.tareas,
-    arr =&gt; app.tareas = arr
-);
-
-<span class="cmt">// Classes CSS (en spork.css):</span>
-<span class="cmt">// .sz-drag-handle    — handle ⠿, cursor grab</span>
-<span class="cmt">// .sz-dragging       — ítem en vuelo (opacity 0.3, scale 0.98)</span>
-<span class="cmt">// .sz-drag-over-item — destino (borde primario inset)</span></div>
-</div>
-
-<!-- Drag & Drop — Drop zone de archivos -->
-<div class="sz-card">
-    <h2 class="sz-h2">Drag &amp; Drop — Drop zone de archivos</h2>
-    <div class="demo-box">
-        <div class="sz-drop-zone" id="drop-zone-demo"
-             ondragover="event.preventDefault();this.classList.add('sz-drag-over')"
-             ondragleave="this.classList.remove('sz-drag-over')"
-             ondrop="handleFileDrop(event)">
+        <div class="sz-drop-zone" id="drop-zone-demo" ondragover="event.preventDefault();this.classList.add('sz-drag-over')" ondragleave="this.classList.remove('sz-drag-over')" ondrop="this.classList.remove('sz-drag-over')">
             <div class="sz-empty">
                 <div class="sz-empty-icon">📂</div>
                 <div class="sz-empty-title">Arrastra archivos aquí</div>
                 <div class="sz-empty-desc">O haz clic para seleccionar</div>
             </div>
         </div>
-        <div id="dropped-files" class="sz-row" style="flex-wrap:wrap;margin-top:6px"></div>
-        <div class="sz-row sz-mt-1">
+        <div class="sz-row">
             <div class="sz-chip">Chip básico</div>
             <div class="sz-chip sz-chip-primary">Primary <span class="sz-chip-close" onclick="this.parentElement.remove()">✕</span></div>
             <div class="sz-chip">Spork <span class="sz-chip-close" onclick="this.parentElement.remove()">✕</span></div>
@@ -1285,71 +1084,39 @@ document.documentElement.setAttribute(<span class="str">data-theme</span>, <span
         </div>
     </div>
 
-    <div class="code-snippet"><span class="cmt">// Drop zone de archivos</span>
+    <div class="code-snippet"><span class="cmt">// Drop zone</span>
 <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-drop-zone"</span>
      <span class="attr">ondragover</span>=<span class="str">"event.preventDefault();this.classList.add('sz-drag-over')"</span>
      <span class="attr">ondragleave</span>=<span class="str">"this.classList.remove('sz-drag-over')"</span>
-     <span class="attr">ondrop</span>=<span class="str">"handleDrop(event)"</span><span class="tag">&gt;&lt;/div&gt;</span>
+     <span class="attr">ondrop</span>=<span class="str">"this.classList.remove('sz-drag-over')"</span><span class="tag">&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
 
-<span class="kw">function</span> <span class="attr">handleDrop</span>(e) {
-    e.<span class="attr">preventDefault</span>();
-    e.currentTarget.classList.<span class="attr">remove</span>(<span class="str">'sz-drag-over'</span>);
-    [...e.dataTransfer.files].<span class="attr">forEach</span>(f =&gt; {
-        <span class="kw">const</span> chip = document.<span class="attr">createElement</span>(<span class="str">'div'</span>);
-        chip.className = <span class="str">'sz-chip sz-chip-primary'</span>;
-        chip.innerHTML = <span class="str">`📄 ${f.name} &lt;span class="sz-chip-close" onclick="this.parentElement.remove()"&gt;✕&lt;/span&gt;`</span>;
-        container.<span class="attr">appendChild</span>(chip);
-    });
-}
+<span class="cmt">// Empty state</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-icon"</span><span class="tag">&gt;</span>📭<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-title"</span><span class="tag">&gt;</span>Sin resultados<span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-empty-desc"</span><span class="tag">&gt;</span>Prueba con otra búsqueda<span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
 
-<span class="cmt">// .sz-drag-over se añade/elimina automáticamente en ondragover/ondragleave</span></div>
-</div>
+<span class="cmt">// Chips con cierre</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-chip sz-chip-primary"</span><span class="tag">&gt;</span>
+    Etiqueta <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-chip-close"</span> <span class="attr">onclick</span>=<span class="str">"this.parentElement.remove()"</span><span class="tag">&gt;</span>✕<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
 
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<!-- 25. SEGURIDAD, CSP Y RENDIMIENTO                                      -->
-<!-- ══════════════════════════════════════════════════════════════════════ -->
-<div class="sz-card sz-mt-2" id="seguridad">
-    <h2 class="sz-h2">25. Seguridad, CSP y rendimiento <span class="pill">v4.0</span></h2>
-    <p class="sz-p">Spork JS 4.0 ya <strong>no usa <code class="sz-mono">eval</code> ni <code class="sz-mono">new Function</code></strong>: las expresiones de los atributos <code class="sz-mono">data-spork-*</code> las ejecuta un intérprete propio. Por eso funciona con una CSP estricta (<code class="sz-mono">script-src 'self'</code>) sin <code class="sz-mono">'unsafe-eval'</code>.</p>
+<span class="cmt">// Breadcrumb</span>
+<span class="tag">&lt;div</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-item"</span><span class="tag">&gt;</span>Inicio<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-sep"</span><span class="tag">&gt;</span>›<span class="tag">&lt;/span&gt;</span>
+    <span class="tag">&lt;span</span> <span class="attr">class</span>=<span class="str">"sz-breadcrumb-item sz-active"</span><span class="tag">&gt;</span>Actual<span class="tag">&lt;/span&gt;</span>
+<span class="tag">&lt;/div&gt;</span>
 
-    <div class="sz-alert sz-alert-warning"><span>⚠️</span><div>Las expresiones son <strong>código del desarrollador</strong>. Nunca insertes texto escrito por usuarios dentro de un atributo <code class="sz-mono">data-spork-*</code>.</div></div>
-
-    <div class="code-snippet"><span class="cmt">// Soportado en expresiones</span>
-literales · + - * / % ** · == != === !== &lt; &gt; &lt;= &gt;= · &amp;&amp; || ?? · ! typeof
-a ? b : c · a?.b · a[b] · f(x) · `plantilla ${x}` · [1, ...lista] · {a: 1, ...obj}
-x =&gt; x * 2 · (a, b) =&gt; a + b · a = 1 · a += 1 · a++ · if (c) f(); else g()
-
-<span class="cmt">// Bloqueado por seguridad</span>
-constructor · __proto__ · prototype · eval · Function
-
-<span class="cmt">// HTML reactivo: se sanea por defecto (scripts, on*, javascript:)</span>
-Spork.configure({ sanitize: true });          <span class="cmt">// por defecto</span>
-Spork.configure({ sanitize: html =&gt; miSanitizador(html) });
-Spork.configure({ sanitize: false });         <span class="cmt">// solo si el HTML es 100% de confianza</span></div>
-
-    <h3 class="sz-h3">Rendimiento: dependencias por binding</h3>
-    <p class="sz-p">Cada binding recuerda qué claves del estado ha leído. Al cambiar <code class="sz-mono">contador</code> solo se reevalúan los bindings que lo usan, no toda la página. Las listas con <code class="sz-mono">data-spork-for-key</code> reutilizan los nodos existentes.</p>
-
-    <div class="code-snippet"><span class="cmt">// Asignar una clave nueva → render preciso</span>
-app.contador = 5;
-
-<span class="cmt">// Mutar un objeto/array in situ NO avisa solo: avisa tú</span>
-app.usuario.nombre = "Ana";
-Spork.touch("usuario");        <span class="cmt">// reevalúa solo lo que lee "usuario"</span>
-Spork.refresh();               <span class="cmt">// o reevalúa todo</span>
-
-<span class="cmt">// Varios cambios, un solo render</span>
-Spork.batch(() =&gt; { app.a = 1; app.b = 2; app.c = 3; });</div>
-
-    <h3 class="sz-h3">Tests</h3>
-    <p class="sz-p">El repositorio incluye <code class="sz-mono">tests/run_tests.py</code> (Playwright + Chromium) con ~80 comprobaciones: motor de expresiones, seguridad, bindings, listas, rendimiento y CSP estricta.</p>
-    <div class="code-snippet">pip install playwright &amp;&amp; playwright install chromium
-python3 tests/run_tests.py</div>
+<span class="cmt">// Atajos de teclado</span>
+<span class="tag">&lt;kbd&gt;</span>Ctrl<span class="tag">&lt;/kbd&gt;</span> + <span class="tag">&lt;kbd&gt;</span>S<span class="tag">&lt;/kbd&gt;</span></div>
 </div>
 
 <!-- ── Footer ─────────────────────────────────────────────────────────── -->
 <div class="sz-footer sz-center">
-    <p class="sz-caption">Spork UI CSS v3.2 / JS v4.0 — Vanilla JS · Sin dependencias · Mobile-first · App-ready</p>
+    <p class="sz-caption">Spork UI v3.0 — Vanilla JS · Sin dependencias · Mobile-first · App-ready</p>
 </div>
 </div><!-- #app -->
 
@@ -1369,15 +1136,12 @@ const app = state({
     switchA: false,
     volumen: 60,
     temaOscuro: true,
-    contadorApi: 0,
-    modulos: [
+        modulos: [
         { nombre: "spork-core.js", estado: "Activo" },
         { nombre: "spork.css",     estado: "Optimizado" },
         { nombre: "tinyspork.cpp", estado: "Embebido" }
     ]
 });
-
-function setTema(oscuro){const r=document.documentElement;r.classList.toggle('sz-dark',oscuro);r.classList.toggle('sz-light',!oscuro);}
 
 // Toast helper
 function showToast(tipo) {
@@ -1420,87 +1184,6 @@ function restartAnim(btn) {
         const cls = [...el.classList].filter(c => ['sz-fade-in','sz-slide-up','sz-slide-down'].includes(c));
         cls.forEach(c => el.classList.remove(c));
         requestAnimationFrame(() => cls.forEach(c => el.classList.add(c)));
-    });
-}
-
-// ── Sortable list demo ────────────────────────────────────────────────
-const sortItems = [
-    { id: 1, icon: '🎨', label: 'spork.css' },
-    { id: 2, icon: '⚡', label: 'spork.js' },
-    { id: 3, icon: '📄', label: 'index.html' },
-    { id: 4, icon: '📦', label: 'package.json' },
-    { id: 5, icon: '🔧', label: '.gitignore' }
-];
-
-function renderSortList(items) {
-    const list = document.getElementById('sort-list');
-    if (!list) return;
-    list.innerHTML = '';
-    items.forEach((item, i) => {
-        const li = document.createElement('li');
-        li.draggable = true;
-        li.dataset.idx = i;
-        li.innerHTML = `<span class="sz-drag-handle">⠿</span><span>${item.icon}</span><span>${item.label}</span>`;
-        list.appendChild(li);
-    });
-    const order = document.getElementById('sort-order');
-    if (order) order.textContent = items.map(i => i.label).join(' → ');
-}
-
-function sporkSortable(listEl, getArr, setArr) {
-    let dragIdx = null;
-    listEl.addEventListener('dragstart', e => {
-        const li = e.target.closest('[draggable]');
-        if (!li) return;
-        dragIdx = [...listEl.children].indexOf(li);
-        setTimeout(() => li.classList.add('sz-dragging'), 0);
-    });
-    listEl.addEventListener('dragend', () => {
-        listEl.querySelectorAll('.sz-dragging,.sz-drag-over-item')
-              .forEach(el => el.classList.remove('sz-dragging', 'sz-drag-over-item'));
-    });
-    listEl.addEventListener('dragover', e => {
-        e.preventDefault();
-        const li = e.target.closest('[draggable]');
-        if (!li) return;
-        listEl.querySelectorAll('.sz-drag-over-item')
-              .forEach(el => el.classList.remove('sz-drag-over-item'));
-        li.classList.add('sz-drag-over-item');
-    });
-    listEl.addEventListener('drop', e => {
-        e.preventDefault();
-        const li = e.target.closest('[draggable]');
-        if (!li || dragIdx === null) return;
-        const dropIdx = [...listEl.children].indexOf(li);
-        if (dragIdx === dropIdx) { dragIdx = null; return; }
-        const arr = [...getArr()];
-        const [moved] = arr.splice(dragIdx, 1);
-        arr.splice(dropIdx, 0, moved);
-        setArr(arr);
-        dragIdx = null;
-    });
-}
-
-let currentSortItems = [...sortItems];
-renderSortList(currentSortItems);
-sporkSortable(
-    document.getElementById('sort-list'),
-    () => currentSortItems,
-    arr => { currentSortItems = arr; renderSortList(arr); }
-);
-
-// ── File drop handler ─────────────────────────────────────────────────
-function handleFileDrop(e) {
-    e.preventDefault();
-    e.currentTarget.classList.remove('sz-drag-over');
-    const container = document.getElementById('dropped-files');
-    const files = [...e.dataTransfer.files];
-    if (!files.length) return;
-    files.forEach(f => {
-        const chip = document.createElement('div');
-        chip.className = 'sz-chip sz-chip-primary sz-fade-in';
-        chip.innerHTML = `📄 ${f.name} <span class="sz-chip-close" onclick="this.parentElement.remove()">✕</span>`;
-        container.appendChild(chip);
     });
 }
 </script>

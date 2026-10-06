@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Spork - Ejemplo Modo Claro / Oscuro</title>
+  <!-- Hoja de estilos modernizada (spork.css) -->
+  <link rel="stylesheet" href="spork.css">
+</head>
+<body>
+
+  <div id="app" class="sz-app-shell sz-no-sidebar">
+    
+    <!-- Toolbar superior con control de tema -->
+    <header class="sz-toolbar">
+      <div class="sz-toolbar-drag"></div>
+      <span class="sz-toolbar-title">Spork App Demo</span>
+      <button class="sz-toolbar-btn" data-ripple onclick="toggleTheme()" title="Cambiar Tema">
+        🌙
+      </button>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="sz-main">
+      <div class="sz-page sz-center">
+        
+        <div class="sz-card sz-max-w-md">
+          <h1 class="sz-h2">¡Bienvenido a Spork!</h1>
+          <p class="sz-p sz-muted">
+            Esta interfaz utiliza el nuevo motor CSS con soporte nativo para variables, capas y modo oscuro automático o manual.
+          </p>
+
+          <div class="sz-divider"></div>
+
+          <div class="sz-field">
+            <label class="sz-label">Escribe algo reactivo:</label>
+            <input type="text" class="sz-input" data-spork-bind="mensaje" placeholder="Escribe aquí...">
+          </div>
+
+          <div class="sz-alert">
+            <span>Has escrito: <strong data-spork-text="mensaje"></strong></span>
+          </div>
+
+          <div class="sz-row sz-row-center sz-mt-2">
+            <button class="sz-btn sz-btn-filled" onclick="alert('¡Acción ejecutada desde Spork!')">
+              Botón Principal
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Barra de estado inferior -->
+    <footer class="sz-statusbar">
+      <div class="sz-statusbar-item">Estado: Listo</div>
+      <div class="sz-statusbar-spacer"></div>
+      <div class="sz-statusbar-item">Spork v3.0</div>
+    </footer>
+
+  </div>
+
+  <!-- Runtime de Spork (spork.js) -->
+  <script src="spork.js"></script>
+  <script>
+    // Inicializar el estado reactivo con Spork
+    const s = state({
+      mensaje: 'Hola mundo con Spork'
+    });
+
+    // Lógica para alternar el tema claro/oscuro añadiendo la clase .sz-dark o .sz-light al html
+    function toggleTheme() {
+      const html = document.documentElement;
+      const isDark = html.classList.contains('sz-dark') || 
+                     (!html.classList.contains('sz-light') && window.matchMedia('(prefers-color-scheme: dark)').matches);
+      
+      if (isDark) {
+        html.classList.remove('sz-dark');
+        html.classList.add('sz-light');
+        document.querySelector('.sz-toolbar-btn').textContent = '🌙';
+      } else {
+        html.classList.remove('sz-light');
+        html.classList.add('sz-dark');
+        document.querySelector('.sz-toolbar-btn').textContent = '☀️';
+      }
+    }
+  </script>
+</body>
+</html>
